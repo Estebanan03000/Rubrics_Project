@@ -1,7 +1,7 @@
 from flask import Blueprint, request
-from app.services.auth_service import AuthService
-from app.services.user_service import UserService
-from app.utils.response import success_response, error_response
+from Backend.academic_service.app.services.auth_service import AuthService
+from Backend.academic_service.app.services.user_service import UserService
+from Backend.academic_service.app.utils.response import success_response, error_response
 
 
 auth_bp = Blueprint('auth', __name__)

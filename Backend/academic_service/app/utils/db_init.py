@@ -1,6 +1,6 @@
-from app.models import db
-from app.models.entities import User
-from app.utils.security import hash_password
+from Backend.academic_service.app.models import db
+from Backend.academic_service.app.models.entities import User
+from Backend.academic_service.app.utils.security import hash_password
 
 
 def initialize_database():

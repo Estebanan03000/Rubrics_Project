@@ -1,12 +1,12 @@
 from datetime import date
-from app.models import db
-from app.models.entities import Career, Semester, Subject, StudyPlan, Group, Registration, Enrollment
-from app.repositories.repositories import (
+from Backend.academic_service.app.models import db
+from Backend.academic_service.app.models.entities import Career, Semester, Subject, StudyPlan, Group, Registration, Enrollment
+from Backend.academic_service.app.repositories.repositories import (
     CareerRepository, SemesterRepository, SubjectRepository, StudyPlanRepository,
     GroupRepository, RegistrationRepository, EnrollmentRepository, StudentRepository,
     TeacherRepository
 )
-from app.utils.serializers import model_to_dict
+from Backend.academic_service.app.utils.serializers import model_to_dict
 
 
 class AcademicService:

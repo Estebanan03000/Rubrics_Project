@@ -1,7 +1,7 @@
 from flask import request, g
 import jwt
-from app.config.settings import Config
-from app.utils.security import decode_access_token
+from Backend.academic_service.app.config.settings import Config
+from Backend.academic_service.app.utils.security import decode_access_token
 
 
 def auth_middleware():

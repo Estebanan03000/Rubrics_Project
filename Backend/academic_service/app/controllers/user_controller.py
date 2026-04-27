@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from app.services.user_service import UserService
-from app.utils.response import success_response, error_response
+from Backend.academic_service.app.services.user_service import UserService
+from Backend.academic_service.app.utils.response import success_response, error_response
 
 
 user_bp = Blueprint('users', __name__)

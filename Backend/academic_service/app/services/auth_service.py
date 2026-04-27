@@ -1,5 +1,5 @@
-from app.repositories.repositories import UserRepository
-from app.utils.security import verify_password, create_access_token
+from Backend.academic_service.app.repositories.repositories import UserRepository
+from Backend.academic_service.app.utils.security import verify_password, create_access_token
 
 
 class AuthService:

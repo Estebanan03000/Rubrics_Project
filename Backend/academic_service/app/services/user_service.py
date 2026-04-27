@@ -1,8 +1,8 @@
-from app.models import db
-from app.models.entities import User, Teacher, Student, UserRole
-from app.repositories.repositories import UserRepository, TeacherRepository, StudentRepository
-from app.utils.security import hash_password
-from app.utils.serializers import model_to_dict
+from Backend.academic_service.app.models import db
+from Backend.academic_service.app.models.entities import User, Teacher, Student, UserRole
+from Backend.academic_service.app.repositories.repositories import UserRepository, TeacherRepository, StudentRepository
+from Backend.academic_service.app.utils.security import hash_password
+from Backend.academic_service.app.utils.serializers import model_to_dict
 
 
 class UserService:

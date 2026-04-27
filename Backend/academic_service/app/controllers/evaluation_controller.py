@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from app.services.evaluation_service import EvaluationService
-from app.utils.response import success_response, error_response
+from Backend.academic_service.app.services.evaluation_service import EvaluationService
+from Backend.academic_service.app.utils.response import success_response, error_response
 
 
 evaluation_bp = Blueprint('evaluation', __name__)

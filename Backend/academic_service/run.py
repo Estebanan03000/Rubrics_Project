@@ -1,5 +1,5 @@
 import logging
-from Backend.academic_service.app import create_app
+from app import create_app
 from waitress import serve
 
 app = create_app()

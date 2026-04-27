@@ -1,5 +1,5 @@
 from sqlalchemy import or_
-from Backend.academic_service.app.models import db
+from app.models import db
 
 
 class BaseRepository:

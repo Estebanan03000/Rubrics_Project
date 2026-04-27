@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from Backend.academic_service.app.services.academic_service import AcademicService
-from Backend.academic_service.app.utils.response import success_response, error_response
+from app.services.academic_service import AcademicService
+from app.utils.response import success_response, error_response
 
 
 academic_bp = Blueprint('academic', __name__)

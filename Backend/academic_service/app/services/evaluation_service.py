@@ -1,10 +1,10 @@
-from Backend.academic_service.app.models import db
-from Backend.academic_service.app.models.entities import Rubric, Criterion, Scale, Evaluation, Grade, GradeDetail, Enrollment, Student
-from Backend.academic_service.app.repositories.repositories import (
+from app.models import db
+from app.models.entities import Rubric, Criterion, Scale, Evaluation, Grade, GradeDetail, Enrollment, Student
+from app.repositories.repositories import (
     RubricRepository, CriterionRepository, ScaleRepository,
     EvaluationRepository, GradeRepository, EnrollmentRepository, GradeDetailRepository
 )
-from Backend.academic_service.app.utils.serializers import model_to_dict
+from app.utils.serializers import model_to_dict
 
 
 class EvaluationService:

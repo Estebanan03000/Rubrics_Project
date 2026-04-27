@@ -1,5 +1,5 @@
 from .base_repository import BaseRepository
-from Backend.academic_service.app.models.entities import (
+from app.models.entities import (
     User, Teacher, Student, Career, Semester, Subject,
     StudyPlan, Group, Enrollment, Registration,
     Rubric, Criterion, Scale, Evaluation, Grade, GradeDetail

@@ -81,6 +81,7 @@ class Semester(TimestampMixin, db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False, default=False)
+    
     groups = db.relationship('Group', back_populates='semester')
 
 

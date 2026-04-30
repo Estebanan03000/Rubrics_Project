@@ -1,11 +1,8 @@
 export interface User {
-    id?: number;
-    name?: string;
+    id?: string;
     email?: string;
-    password?:string;
-    age?: number;
-    city?: string;
-    phone?: string;
+    password_hash?: string;
+    code?: string;
+    role?: string;
     is_active?: boolean;
-    token?:string;
 }

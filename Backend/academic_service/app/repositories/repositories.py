@@ -1,8 +1,13 @@
+"""
+Archivo: Backend\academic_service\app\repositories\repositories.py
+Proposito: Implementa la logica principal del archivo repositories.
+"""
 from .base_repository import BaseRepository
 from app.models.entities import (
     User, Teacher, Student, Career, Semester, Subject,
     StudyPlan, Group, Enrollment, Registration,
-    Rubric, Criterion, Scale, Evaluation, Grade, GradeDetail
+    Rubric, Criterion, Scale, Evaluation, Grade, GradeDetail,
+    AuditLog
 )
 
 
@@ -74,6 +79,11 @@ class ScaleRepository(BaseRepository):
 class EvaluationRepository(BaseRepository):
     def __init__(self):
         super().__init__(Evaluation)
+
+
+class AuditLogRepository(BaseRepository):
+    def __init__(self):
+        super().__init__(AuditLog)
 
 
 class GradeRepository(BaseRepository):

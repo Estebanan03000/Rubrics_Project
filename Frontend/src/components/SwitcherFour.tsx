@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\SwitcherFour.tsx
+   Proposito: Implementa la logica principal del archivo SwitcherFour.
+*/
 import { useState } from 'react';
 
 const SwitcherFour = () => {

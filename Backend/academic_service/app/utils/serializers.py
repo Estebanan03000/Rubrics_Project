@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\utils\serializers.py
+Proposito: Implementa la logica principal del archivo serializers.
+"""
 from datetime import date, datetime
 from flask_sqlalchemy.model import Model
 

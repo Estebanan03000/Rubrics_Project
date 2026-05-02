@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\controllers\user_controller.py
+Proposito: Implementa la logica principal del archivo user_controller.
+"""
 from flask import Blueprint, request
 from app.services.user_service import UserService
 from app.utils.response import success_response, error_response
@@ -10,7 +14,11 @@ user_service = UserService()
 @user_bp.post('/')
 def create_user():
     try:
-        result = user_service.create_user(request.json)
+        result = user_service.create_user(
+            request.json,
+            actor_id=request.headers.get('X-Actor-User-Id'),
+            ip_address=request.remote_addr
+        )
         return success_response(result, 'User created', 201)
     except ValueError as exc:
         return error_response(str(exc), 400)
@@ -52,7 +60,12 @@ def public_register_teacher():
 @user_bp.put('/<user_id>')
 def update_user(user_id):
     try:
-        result = user_service.update_user(user_id, request.json)
+        result = user_service.update_user(
+            user_id,
+            request.json,
+            actor_id=request.headers.get('X-Actor-User-Id'),
+            ip_address=request.remote_addr
+        )
         return success_response(result, 'User updated')
     except ValueError as exc:
         return error_response(str(exc), 400)
@@ -70,7 +83,11 @@ def delete_user(user_id):
 @user_bp.patch('/<user_id>/deactivate')
 def deactivate_user(user_id):
     try:
-        result = user_service.deactivate_user(user_id)
+        result = user_service.deactivate_user(
+            user_id,
+            actor_id=request.headers.get('X-Actor-User-Id'),
+            ip_address=request.remote_addr
+        )
         return success_response(result, 'User deactivated')
     except ValueError as exc:
         return error_response(str(exc), 404)
@@ -85,7 +102,8 @@ def search_users():
         'code': request.args.get('code'),
         'identification': request.args.get('identification'),
         'first_name': request.args.get('first_name'),
-        'last_name': request.args.get('last_name')
+        'last_name': request.args.get('last_name'),
+        'career_id': request.args.get('career_id')
     }
     result = user_service.search_users(filters)
     return success_response(result)

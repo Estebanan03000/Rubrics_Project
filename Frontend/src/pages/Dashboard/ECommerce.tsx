@@ -1,3 +1,6 @@
+/* Archivo: pages/Dashboard/ECommerce.tsx
+   Proposito: Componente de pagina ECommerce.
+*/
 import CardFour from '../../components/CardFour.tsx';
 import CardOne from '../../components/CardOne.tsx';
 import CardThree from '../../components/CardThree.tsx';

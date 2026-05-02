@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\ChartOne.tsx
+   Proposito: Implementa la logica principal del archivo ChartOne.
+*/
 import { ApexOptions } from 'apexcharts';
 import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';

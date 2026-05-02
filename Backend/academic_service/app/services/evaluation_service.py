@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\services\evaluation_service.py
+Proposito: Implementa la logica principal del archivo evaluation_service.
+"""
 from app.models import db
 from app.models.entities import Rubric, Criterion, Scale, Evaluation, Grade, GradeDetail, Enrollment, Student
 from app.repositories.repositories import (

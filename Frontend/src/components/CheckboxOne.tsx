@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\CheckboxOne.tsx
+   Proposito: Implementa la logica principal del archivo CheckboxOne.
+*/
 import { useState } from 'react';
 
 const CheckboxOne = () => {

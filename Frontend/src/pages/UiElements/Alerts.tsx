@@ -1,3 +1,6 @@
+/* Archivo: pages/UiElements/Alerts.tsx
+   Proposito: Componente de pagina Alerts.
+*/
 import Breadcrumb from '../../components/Breadcrumb';
 
 const Alerts = () => {

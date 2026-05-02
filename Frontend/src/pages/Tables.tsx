@@ -1,3 +1,6 @@
+/* Archivo: pages/Tables.tsx
+   Proposito: Componente de pagina Tables.
+*/
 import Breadcrumb from '../components/Breadcrumb';
 import TableOne from '../components/TableOne';
 import TableThree from '../components/TableThree';

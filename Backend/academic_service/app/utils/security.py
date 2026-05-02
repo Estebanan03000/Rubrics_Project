@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\utils\security.py
+Proposito: Implementa la logica principal del archivo security.
+"""
 from datetime import datetime, timedelta, timezone
 import jwt
 from werkzeug.security import generate_password_hash, check_password_hash

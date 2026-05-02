@@ -1,3 +1,7 @@
+"""
+Archivo: Frontend\server\main.py
+Proposito: Implementa la logica principal del archivo main.
+"""
 from flask import Flask
 from flask_socketio import SocketIO
 import eventlet

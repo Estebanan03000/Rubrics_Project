@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\controllers\academic_controller.py
+Proposito: Implementa la logica principal del archivo academic_controller.
+"""
 from flask import Blueprint, request
 from app.services.academic_service import AcademicService
 from app.utils.response import success_response, error_response

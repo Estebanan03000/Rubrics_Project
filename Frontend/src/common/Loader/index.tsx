@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\common\Loader\index.tsx
+   Proposito: Implementa la logica principal del archivo index.
+*/
 const Loader = () => {
   return (
     <div className="flex h-screen items-center justify-center bg-white">

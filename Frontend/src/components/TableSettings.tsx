@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\TableSettings.tsx
+   Proposito: Implementa la logica principal del archivo TableSettings.
+*/
 import React from "react";
 import { BsFillTrashFill, BsFillPencilFill } from "react-icons/bs";
 import dataJSON from '../../public/data.json';

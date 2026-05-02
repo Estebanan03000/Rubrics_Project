@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\middleware\auth_interceptor.py
+Proposito: Implementa la logica principal del archivo auth_interceptor.
+"""
 from flask import request, g
 import jwt
 from app.config.settings import Config

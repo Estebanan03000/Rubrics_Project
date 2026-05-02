@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\App.tsx
+   Proposito: Implementa la logica principal del archivo App.
+*/
 import { Suspense, lazy, useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';

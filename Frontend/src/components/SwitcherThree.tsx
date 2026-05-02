@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\SwitcherThree.tsx
+   Proposito: Implementa la logica principal del archivo SwitcherThree.
+*/
 import { useState } from 'react';
 
 const SwitcherThree = () => {

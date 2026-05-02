@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\SidebarLinkGroup.tsx
+   Proposito: Implementa la logica principal del archivo SidebarLinkGroup.
+*/
 import { ReactNode, useState } from 'react';
 
 interface SidebarLinkGroupProps {

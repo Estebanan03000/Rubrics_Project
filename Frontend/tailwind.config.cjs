@@ -1,3 +1,6 @@
+/* Archivo: Frontend\tailwind.config.cjs
+   Proposito: Implementa la logica principal del archivo tailwind.config.
+*/
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 /** @type {import('tailwindcss').Config} */

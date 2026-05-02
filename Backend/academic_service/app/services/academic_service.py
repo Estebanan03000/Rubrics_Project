@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\services\academic_service.py
+Proposito: Implementa la logica principal del archivo academic_service.
+"""
 from datetime import date
 from app.models import db
 from app.models.entities import Career, Semester, Subject, StudyPlan, Group, Registration, Enrollment

@@ -1,3 +1,6 @@
+/* Archivo: Frontend\vite.config.js
+   Proposito: Implementa la logica principal del archivo vite.config.
+*/
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 

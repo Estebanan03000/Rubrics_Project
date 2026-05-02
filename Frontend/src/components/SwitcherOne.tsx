@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\SwitcherOne.tsx
+   Proposito: Implementa la logica principal del archivo SwitcherOne.
+*/
 import { useState } from 'react';
 
 const SwitcherOne = () => {

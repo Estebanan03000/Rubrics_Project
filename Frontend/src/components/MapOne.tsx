@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\MapOne.tsx
+   Proposito: Implementa la logica principal del archivo MapOne.
+*/
 import jsVectorMap from 'jsvectormap';
 import 'jsvectormap/dist/css/jsvectormap.css';
 import { useEffect } from 'react';

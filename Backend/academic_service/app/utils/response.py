@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\utils\response.py
+Proposito: Implementa la logica principal del archivo response.
+"""
 def success_response(data=None, message='Success', status_code=200):
     return {'message': message, 'data': data}, status_code
 

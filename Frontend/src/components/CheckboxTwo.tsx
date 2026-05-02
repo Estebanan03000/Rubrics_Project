@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\CheckboxTwo.tsx
+   Proposito: Implementa la logica principal del archivo CheckboxTwo.
+*/
 import { useState } from 'react';
 
 const CheckboxTwo = () => {

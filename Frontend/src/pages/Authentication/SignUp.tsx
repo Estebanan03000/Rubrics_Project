@@ -1,3 +1,6 @@
+/* Archivo: pages/Authentication/SignUp.tsx
+   Proposito: Componente de pagina SignUp.
+*/
 import { Link } from 'react-router-dom';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';

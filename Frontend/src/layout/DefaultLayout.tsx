@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\layout\DefaultLayout.tsx
+   Proposito: Implementa la logica principal del archivo DefaultLayout.
+*/
 import { useState } from 'react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';

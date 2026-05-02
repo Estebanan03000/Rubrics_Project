@@ -1,3 +1,7 @@
+"""
+Archivo: Frontend\mockServerSocket.py
+Proposito: Implementa la logica principal del archivo mockServerSocket.
+"""
 from flask import Flask
 from flask_socketio import SocketIO
 import eventlet

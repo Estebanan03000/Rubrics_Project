@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\Auth\ProtectedRoute.tsx
+   Proposito: Implementa la logica principal del archivo ProtectedRoute.
+*/
 import { Navigate, Outlet } from "react-router-dom";
 import { LocalStorageProvider } from "../../storage/LocalStorageProvider";
 import { User } from "../../models/User";

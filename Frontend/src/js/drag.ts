@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\js\drag.ts
+   Proposito: Implementa la logica principal del archivo drag.
+*/
 const Drag = (): void => {
   const draggables = document.querySelectorAll<HTMLElement>('.task');
   const droppables = document.querySelectorAll<HTMLElement>('.swim-lane');

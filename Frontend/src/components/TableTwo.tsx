@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\TableTwo.tsx
+   Proposito: Implementa la logica principal del archivo TableTwo.
+*/
 import ProductOne from '../images/product/product-01.png';
 import ProductTwo from '../images/product/product-02.png';
 import ProductThree from '../images/product/product-03.png';

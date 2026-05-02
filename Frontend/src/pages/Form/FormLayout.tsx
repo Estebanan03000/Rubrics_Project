@@ -1,3 +1,6 @@
+/* Archivo: pages/Form/FormLayout.tsx
+   Proposito: Componente de pagina FormLayout.
+*/
 import Breadcrumb from '../../components/Breadcrumb';
 
 const FormLayout = () => {

@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\CheckboxFive.tsx
+   Proposito: Implementa la logica principal del archivo CheckboxFive.
+*/
 import { useState } from 'react';
 
 const CheckboxFive = () => {

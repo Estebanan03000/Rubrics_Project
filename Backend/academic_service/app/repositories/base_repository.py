@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\repositories\base_repository.py
+Proposito: Implementa la logica principal del archivo base_repository.
+"""
 from sqlalchemy import or_
 from app.models import db
 

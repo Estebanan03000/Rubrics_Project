@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\DarkModeSwitcher.tsx
+   Proposito: Implementa la logica principal del archivo DarkModeSwitcher.
+*/
 import useColorMode from '../hooks/useColorMode';
 
 const DarkModeSwitcher = () => {

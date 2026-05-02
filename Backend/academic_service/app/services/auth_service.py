@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\services\auth_service.py
+Proposito: Implementa la logica principal del archivo auth_service.
+"""
 from app.repositories.repositories import UserRepository
 from app.utils.security import verify_password, create_access_token
 

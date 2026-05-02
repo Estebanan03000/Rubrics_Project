@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\Sidebar.tsx
+   Proposito: Implementa la logica principal del archivo Sidebar.
+*/
 import React, { useEffect, useRef, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import Logo from '../images/logo/logo.svg';

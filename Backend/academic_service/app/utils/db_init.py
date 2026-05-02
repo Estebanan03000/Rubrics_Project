@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\utils\db_init.py
+Proposito: Implementa la logica principal del archivo db_init.
+"""
 from app.models import db
 from app.models.entities import User
 from app.utils.security import hash_password

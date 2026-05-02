@@ -1,3 +1,6 @@
+/* Archivo: pages/Calendar.tsx
+   Proposito: Componente de pagina Calendar.
+*/
 import Breadcrumb from '../components/Breadcrumb';
 
 const Calendar = () => {

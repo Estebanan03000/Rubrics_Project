@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\hooks\fireToast.tsx
+   Proposito: Implementa la logica principal del archivo fireToast.
+*/
 import toast from 'react-hot-toast';
 import dataJSON from '../../public/data.json';
 

@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\DropdownMessage.tsx
+   Proposito: Implementa la logica principal del archivo DropdownMessage.
+*/
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 

@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\DropdownNotification.tsx
+   Proposito: Implementa la logica principal del archivo DropdownNotification.
+*/
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { io } from 'socket.io-client';

@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\ChartFour.tsx
+   Proposito: Implementa la logica principal del archivo ChartFour.
+*/
 import { ApexOptions } from 'apexcharts';
 import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';

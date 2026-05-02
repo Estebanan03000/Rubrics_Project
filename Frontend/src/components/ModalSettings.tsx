@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\ModalSettings.tsx
+   Proposito: Implementa la logica principal del archivo ModalSettings.
+*/
 import React, { useState } from "react";
 import dataJSON from '../../public/data.json';
 

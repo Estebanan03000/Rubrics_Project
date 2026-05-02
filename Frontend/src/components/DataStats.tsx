@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\DataStats.tsx
+   Proposito: Implementa la logica principal del archivo DataStats.
+*/
 const DataStats = () => {
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">

@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\controllers\evaluation_controller.py
+Proposito: Implementa la logica principal del archivo evaluation_controller.
+"""
 from flask import Blueprint, request
 from app.services.evaluation_service import EvaluationService
 from app.utils.response import success_response, error_response

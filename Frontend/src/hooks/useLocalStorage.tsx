@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\hooks\useLocalStorage.tsx
+   Proposito: Implementa la logica principal del archivo useLocalStorage.
+*/
 import { useEffect, useState } from 'react';
 
 type SetValue<T> = T | ((val: T) => T);

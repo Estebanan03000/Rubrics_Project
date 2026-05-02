@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\__init__.py
+Proposito: Implementa la logica principal del archivo __init__.
+"""
 from flask import Flask
 from .config.settings import Config
 from .models import db

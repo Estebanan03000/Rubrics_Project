@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\store\userSlice.ts
+   Proposito: Implementa la logica principal del archivo userSlice.
+*/
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "../models/User";
 import { LocalStorageProvider } from "../storage/LocalStorageProvider";

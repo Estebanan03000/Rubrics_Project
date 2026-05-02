@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\controllers\auth_controller.py
+Proposito: Implementa la logica principal del archivo auth_controller.
+"""
 from flask import Blueprint, request
 from app.services.auth_service import AuthService
 from app.services.user_service import UserService

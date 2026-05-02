@@ -1,3 +1,6 @@
+/* Archivo: pages/Form/FormElements.tsx
+   Proposito: Componente de pagina FormElements.
+*/
 import Breadcrumb from '../../components/Breadcrumb';
 import CheckboxFive from '../../components/CheckboxFive';
 import CheckboxFour from '../../components/CheckboxFour';

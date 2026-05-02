@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\models\Subject.ts
+   Proposito: Implementa la logica principal del archivo Subject.
+*/
 export interface Subject {
     id?: string;
     name?: string;

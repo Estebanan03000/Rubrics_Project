@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\DropdownDefault.tsx
+   Proposito: Implementa la logica principal del archivo DropdownDefault.
+*/
 import { useEffect, useRef, useState } from "react";
 
 const DropdownDefault = () => {

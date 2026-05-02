@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\models\Semester.ts
+   Proposito: Implementa la logica principal del archivo Semester.
+*/
 export interface Semester {
     id?: string;
     name?: string;

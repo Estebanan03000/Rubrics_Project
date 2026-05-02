@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\SwitcherTwo.tsx
+   Proposito: Implementa la logica principal del archivo SwitcherTwo.
+*/
 import { useState } from 'react';
 
 const SwitcherTwo = () => {

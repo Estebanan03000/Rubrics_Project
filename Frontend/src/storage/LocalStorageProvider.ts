@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\storage\LocalStorageProvider.ts
+   Proposito: Implementa la logica principal del archivo LocalStorageProvider.
+*/
 import { StorageProvider } from "./StorageProvider";
 
 export class LocalStorageProvider implements StorageProvider {

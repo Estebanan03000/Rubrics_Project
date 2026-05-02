@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\models\__init__.py
+Proposito: Implementa la logica principal del archivo __init__.
+"""
 from flask_sqlalchemy import SQLAlchemy
 
 

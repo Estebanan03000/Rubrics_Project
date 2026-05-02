@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\models\Student.ts
+   Proposito: Implementa la logica principal del archivo Student.
+*/
 export interface Student {
     id?: string;
     user_id?: string;

@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\Breadcrumb.tsx
+   Proposito: Implementa la logica principal del archivo Breadcrumb.
+*/
 import { Link } from 'react-router-dom';
 interface BreadcrumbProps {
   pageName: string;

@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\TaskHeader.tsx
+   Proposito: Implementa la logica principal del archivo TaskHeader.
+*/
 import { useEffect, useRef, useState } from 'react';
 import userSeven from '../images/user/user-07.png';
 import userEight from '../images/user/user-08.png';

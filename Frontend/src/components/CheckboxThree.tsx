@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\CheckboxThree.tsx
+   Proposito: Implementa la logica principal del archivo CheckboxThree.
+*/
 import { useState } from 'react';
 
 const CheckboxThree = () => {

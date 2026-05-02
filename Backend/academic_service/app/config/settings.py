@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\config\settings.py
+Proposito: Implementa la logica principal del archivo settings.
+"""
 import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))

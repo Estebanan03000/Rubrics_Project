@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\DropdownUser.tsx
+   Proposito: Implementa la logica principal del archivo DropdownUser.
+*/
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 

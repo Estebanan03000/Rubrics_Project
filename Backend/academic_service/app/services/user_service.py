@@ -1,6 +1,10 @@
+"""
+Archivo: Backend\academic_service\app\services\user_service.py
+Proposito: Implementa la logica principal del archivo user_service.
+"""
 from app.models import db
-from app.models.entities import User, Teacher, Student, UserRole
-from app.repositories.repositories import UserRepository, TeacherRepository, StudentRepository
+from app.models.entities import User, Teacher, Student, UserRole, AuditLog
+from app.repositories.repositories import UserRepository, TeacherRepository, StudentRepository, AuditLogRepository
 from app.utils.security import hash_password
 from app.utils.serializers import model_to_dict
 
@@ -10,8 +14,20 @@ class UserService:
         self.user_repository = UserRepository()
         self.teacher_repository = TeacherRepository()
         self.student_repository = StudentRepository()
+        self.audit_repository = AuditLogRepository()
 
-    def create_user(self, payload: dict):
+    def _write_audit(self, action: str, entity_name: str, entity_id: str, actor_id: str = None, ip_address: str = None, detail: str = None):
+        log = AuditLog(
+            actor_user_id=actor_id,
+            action=action,
+            entity_name=entity_name,
+            entity_id=entity_id,
+            detail=detail,
+            ip_address=ip_address
+        )
+        db.session.add(log)
+
+    def create_user(self, payload: dict, actor_id: str = None, ip_address: str = None):
         email = payload.get('email')
         password = payload.get('password')
         code = payload.get('code')
@@ -19,6 +35,8 @@ class UserService:
 
         if not email or not password or not code or not role:
             raise ValueError('email, password, code and role are required')
+        if role not in [r.value for r in UserRole]:
+            raise ValueError(f'role must be one of: {[r.value for r in UserRole]}')
         if self.user_repository.find_one_by(email=email):
             raise ValueError('email already exists')
         if self.user_repository.find_one_by(code=code):
@@ -29,30 +47,39 @@ class UserService:
         db.session.flush()
 
         if role == UserRole.TEACHER.value:
+            first_name = payload.get('first_name')
+            last_name = payload.get('last_name')
             identification = payload.get('identification')
+            if not first_name or not last_name or not identification:
+                raise ValueError('first_name, last_name and identification are required for TEACHER')
             if self.teacher_repository.find_one_by(identification=identification):
                 raise ValueError('teacher identification already exists')
             profile = Teacher(
                 user_id=user.id,
-                first_name=payload.get('first_name'),
-                last_name=payload.get('last_name'),
+                first_name=first_name,
+                last_name=last_name,
                 phone=payload.get('phone'),
                 identification=identification,
                 specialty=payload.get('specialty')
             )
             db.session.add(profile)
         elif role == UserRole.STUDENT.value:
+            first_name = payload.get('first_name')
+            last_name = payload.get('last_name')
             identification = payload.get('identification')
+            if not first_name or not last_name or not identification:
+                raise ValueError('first_name, last_name and identification are required for STUDENT')
             if self.student_repository.find_one_by(identification=identification):
                 raise ValueError('student identification already exists')
             profile = Student(
                 user_id=user.id,
-                first_name=payload.get('first_name'),
-                last_name=payload.get('last_name'),
+                first_name=first_name,
+                last_name=last_name,
                 identification=identification,
             )
             db.session.add(profile)
 
+        self._write_audit('CREATE', 'users', user.id, actor_id=actor_id, ip_address=ip_address)
         db.session.commit()
         return self.get_user_with_profile(user.id)
 
@@ -65,7 +92,7 @@ class UserService:
             raise ValueError('user not found')
         return user
 
-    def update_user(self, user_id: str, payload: dict):
+    def update_user(self, user_id: str, payload: dict, actor_id: str = None, ip_address: str = None):
         user = self.user_repository.get_by_id(user_id)
         if not user:
             raise ValueError('user not found')
@@ -92,6 +119,7 @@ class UserService:
                             raise ValueError('identification already exists')
                     setattr(profile, field, payload[field])
 
+        self._write_audit('UPDATE', 'users', user.id, actor_id=actor_id, ip_address=ip_address)
         db.session.commit()
         return self.get_user_with_profile(user.id)
 
@@ -102,11 +130,12 @@ class UserService:
         self.user_repository.delete(user)
         return {'id': user_id, 'deleted': True, 'entity': 'users'}
 
-    def deactivate_user(self, user_id: str):
+    def deactivate_user(self, user_id: str, actor_id: str = None, ip_address: str = None):
         user = self.user_repository.get_by_id(user_id)
         if not user:
             raise ValueError('user not found')
         user.is_active = False
+        self._write_audit('DEACTIVATE', 'users', user.id, actor_id=actor_id, ip_address=ip_address)
         db.session.commit()
         return self.get_user_with_profile(user.id)
 
@@ -140,6 +169,11 @@ class UserService:
                 continue
             if profile and filters.get('last_name') and filters['last_name'].lower() not in profile.last_name.lower():
                 continue
+            if filters.get('career_id'):
+                if not hasattr(profile, 'registrations'):
+                    continue
+                if not any(r.career_id == filters['career_id'] for r in profile.registrations):
+                    continue
             item = model_to_dict(user)
             item['profile'] = model_to_dict(profile) if profile else None
             results.append(item)

@@ -1,3 +1,6 @@
+/* Archivo: pages/Profile.tsx
+   Proposito: Componente de pagina Profile.
+*/
 import Breadcrumb from '../components/Breadcrumb';
 import CoverOne from '../images/cover/cover-01.png';
 import userSix from '../images/user/user-06.png';

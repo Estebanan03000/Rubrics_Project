@@ -1,26 +1,28 @@
-import React from "react";
+/* Archivo: pages/Authentication/SignIn.tsx
+   Proposito: Componente de pagina SignIn.
+*/
+import React from 'react';
 
-
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { User } from "../../models/User";
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { User } from '../../models/User';
 import SecurityService from '../../services/securityService';
 
-import Breadcrumb from "../../components/Breadcrumb";
-import { useNavigate } from "react-router-dom";
+import Breadcrumb from '../../components/Breadcrumb';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
   const handleLogin = async (user: User) => {
-    console.log("aqui " + JSON.stringify(user))
+    console.log('aqui ' + JSON.stringify(user));
     try {
       const response = await SecurityService.login(user);
       console.log('Usuario autenticado:', response);
-      navigate("/");
+      navigate('/');
     } catch (error) {
       console.error('Error al iniciar sesión', error);
     }
-  }
+  };
   return (
     <>
       <Breadcrumb pageName="Sign In" />
@@ -29,22 +31,20 @@ const SignIn: React.FC = () => {
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="px-26 py-17.5 text-center">
-
-                <img
-                  className="hidden dark:block"
-                  src={"/images/logo/logo.svg"}
-                  alt="Logo"
-                  width={176}
-                  height={32}
-                />
-                <img
-                  className="dark:hidden"
-                  src={"/images/logo/logo-dark.svg"}
-                  alt="Logo"
-                  width={176}
-                  height={32}
-                />
-
+              <img
+                className="hidden dark:block"
+                src={'/images/logo/logo.svg'}
+                alt="Logo"
+                width={176}
+                height={32}
+              />
+              <img
+                className="dark:hidden"
+                src={'/images/logo/logo-dark.svg'}
+                alt="Logo"
+                width={176}
+                height={32}
+              />
 
               <p className="2xl:px-20">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit
@@ -185,34 +185,65 @@ const SignIn: React.FC = () => {
 
               <Formik
                 initialValues={{
-                  email: "",
-                  password: ""
+                  email: '',
+                  password: '',
                 }}
                 validationSchema={Yup.object({
-                  email: Yup.string().email("Email inválido").required("El email es obligatorio"),
-                  password: Yup.string().required("La contraseña es obligatoria"),
+                  email: Yup.string()
+                    .email('Email inválido')
+                    .required('El email es obligatorio'),
+                  password: Yup.string().required(
+                    'La contraseña es obligatoria',
+                  ),
                 })}
                 onSubmit={(values) => {
-                  const formattedValues = { ...values };  // Formateo adicional si es necesario
+                  const formattedValues = { ...values }; // Formateo adicional si es necesario
                   handleLogin(formattedValues);
                 }}
-
               >
                 {({ handleSubmit }) => (
-                  <Form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 p-6 bg-white rounded-md shadow-md">
-
+                  <Form
+                    onSubmit={handleSubmit}
+                    className="grid grid-cols-1 gap-4 p-6 bg-white rounded-md shadow-md"
+                  >
                     {/* Email */}
                     <div>
-                      <label htmlFor="email" className="block text-lg font-medium text-gray-700">Email</label>
-                      <Field type="email" name="email" className="w-full border rounded-md p-2" />
-                      <ErrorMessage name="email" component="p" className="text-red-500 text-sm" />
+                      <label
+                        htmlFor="email"
+                        className="block text-lg font-medium text-gray-700"
+                      >
+                        Email
+                      </label>
+                      <Field
+                        type="email"
+                        name="email"
+                        className="w-full border rounded-md p-2"
+                      />
+                      <ErrorMessage
+                        name="email"
+                        component="p"
+                        className="text-red-500 text-sm"
+                      />
                     </div>
 
                     {/* Password */}
                     <div>
-                      <label htmlFor="password" className="block text-lg font-medium text-gray-700">Password</label>
-                      <Field type="password" name="password" className="w-full border rounded-md p-2" />
-                      <ErrorMessage name="password" component="p" className="text-red-500 text-sm" />
+                      <label
+                        htmlFor="password"
+                        className="block text-lg font-medium text-gray-700"
+                      >
+                        Password
+                      </label>
+                      <Field
+                        type="password"
+                        name="password"
+                        className="w-full border rounded-md p-2"
+                      />
+                      <ErrorMessage
+                        name="password"
+                        component="p"
+                        className="text-red-500 text-sm"
+                      />
                     </div>
                     {/* Botón de enviar */}
                     <button
@@ -257,14 +288,11 @@ const SignIn: React.FC = () => {
                       </span>
                       Sign in with Google
                     </button>
-
                   </Form>
                 )}
               </Formik>
 
-              <div className="mt-6 text-center">
-                
-              </div>
+              <div className="mt-6 text-center"></div>
             </div>
           </div>
         </div>

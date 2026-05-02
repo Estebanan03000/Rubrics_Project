@@ -1,3 +1,6 @@
+/* Archivo: pages/UiElements/Buttons.tsx
+   Proposito: Componente de pagina Buttons.
+*/
 import { Link } from 'react-router-dom';
 
 import Breadcrumb from '../../components/Breadcrumb';

@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\app\models\entities.py
+Proposito: Implementa la logica principal del archivo entities.
+"""
 import uuid
 from datetime import datetime
 from enum import Enum
@@ -242,3 +246,36 @@ class GradeDetail(TimestampMixin, db.Model):
 
     scale = db.relationship('Scale', back_populates='grade_details')
     student = db.relationship('Student', back_populates='grade_details')
+
+
+class AuditLog(TimestampMixin, db.Model):
+    __tablename__ = 'audit_logs'
+    id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
+    actor_user_id = db.Column(db.String(36), nullable=True)
+    action = db.Column(db.String(80), nullable=False)
+    entity_name = db.Column(db.String(80), nullable=False)
+    entity_id = db.Column(db.String(36), nullable=True)
+    detail = db.Column(db.Text)
+    ip_address = db.Column(db.String(64))
+
+
+class Notification(TimestampMixin, db.Model):
+    __tablename__ = 'notifications'
+    id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
+    recipient_user_id = db.Column(db.String(36), nullable=False)
+    title = db.Column(db.String(120), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    channel = db.Column(db.String(30), nullable=False, default='IN_APP')
+    is_read = db.Column(db.Boolean, nullable=False, default=False)
+    read_at = db.Column(db.DateTime)
+
+
+class GeneratedReport(TimestampMixin, db.Model):
+    __tablename__ = 'generated_reports'
+    id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
+    generated_by_user_id = db.Column(db.String(36), nullable=True)
+    report_type = db.Column(db.String(50), nullable=False)
+    file_name = db.Column(db.String(255), nullable=False)
+    file_path = db.Column(db.String(500), nullable=False)
+    mime_type = db.Column(db.String(100), nullable=False, default='application/pdf')
+    status = db.Column(db.String(30), nullable=False, default='READY')

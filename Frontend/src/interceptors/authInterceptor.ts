@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\interceptors\authInterceptor.ts
+   Proposito: Implementa la logica principal del archivo authInterceptor.
+*/
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { LocalStorageProvider } from "../storage/LocalStorageProvider";
 import { StorageProvider } from "../storage/StorageProvider";

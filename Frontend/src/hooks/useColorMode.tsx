@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\hooks\useColorMode.tsx
+   Proposito: Implementa la logica principal del archivo useColorMode.
+*/
 import { useEffect } from 'react';
 import useLocalStorage from './useLocalStorage';
 

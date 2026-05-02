@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\CheckboxFour.tsx
+   Proposito: Implementa la logica principal del archivo CheckboxFour.
+*/
 import { useState } from 'react';
 
 const CheckboxFour = () => {

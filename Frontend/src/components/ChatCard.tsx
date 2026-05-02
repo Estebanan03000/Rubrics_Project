@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\ChatCard.tsx
+   Proposito: Implementa la logica principal del archivo ChatCard.
+*/
 import { Link } from 'react-router-dom';
 import UserOne from '../images/user/user-01.png';
 import UserTwo from '../images/user/user-02.png';

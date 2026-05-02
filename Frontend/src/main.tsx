@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\main.tsx
+   Proposito: Implementa la logica principal del archivo main.
+*/
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';

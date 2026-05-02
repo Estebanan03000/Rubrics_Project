@@ -1,3 +1,6 @@
+/* Archivo: pages/Chart.tsx
+   Proposito: Componente de pagina Chart.
+*/
 import Breadcrumb from '../components/Breadcrumb.tsx';
 import ChartFour from '../components/ChartFour';
 import ChartOne from '../components/ChartOne.tsx';

@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\models\Rubric.ts
+   Proposito: Implementa la logica principal del archivo Rubric.
+*/
 export interface Rubric {
     id?: string;
     subject_id?: string;

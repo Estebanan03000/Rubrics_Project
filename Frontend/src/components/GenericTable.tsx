@@ -1,3 +1,6 @@
+/* Archivo: Frontend\src\components\GenericTable.tsx
+   Proposito: Implementa la logica principal del archivo GenericTable.
+*/
 import React from "react";
 
 interface Action {

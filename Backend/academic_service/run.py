@@ -1,3 +1,7 @@
+"""
+Archivo: Backend\academic_service\run.py
+Proposito: Implementa la logica principal del archivo run.
+"""
 import logging
 from app import create_app
 from waitress import serve

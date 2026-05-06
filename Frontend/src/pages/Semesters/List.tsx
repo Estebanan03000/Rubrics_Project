@@ -1,34 +1,64 @@
-/* Archivo: pages/Semesters/List.tsx   Proposito: Pagina para listar y gestionar registros de Semesters.*/
-import React, { useEffect, useState } from 'react';
-import { Semester } from '../../models/Semester';
-import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
-import { semesterService } from '../../services/semesterService';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Semester } from "../../models/Semester";
+import { semesterService } from "../../services/semesterService";
+import AcademicHeader from "../../components/academic/AcademicHeader";
+import EntityTable, { TableColumn } from "../../components/academic/EntityTable";
+
 const SemestersList: React.FC = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState<Semester[]>([]);
+  const [searchParams] = useSearchParams();
+  const careerId = searchParams.get("careerId");
+
+  const [semesters, setSemesters] = useState<Semester[]>([]);
+
   useEffect(() => {
-    fetchData();
+    loadSemesters();
   }, []);
-  const fetchData = async () => {
-    const semesters = await semesterService.getSemesters();
-    setData(semesters);
+
+  const loadSemesters = async () => {
+    const response = await semesterService.getSemesters();
+
+    const filtered = careerId
+      ? response.filter((semester: Semester) => semester.career_id === careerId)
+      : response;
+
+    setSemesters(filtered);
   };
-  const handleCreate = () => {
-    navigate('/semesters/create');
-  };
+
+  const columns: TableColumn<Semester>[] = [
+    { header: "Nombre", render: (semester) => semester.name },
+    { header: "Código", render: (semester) => semester.code },
+    { header: "Inicio", render: (semester) => semester.start_date },
+    { header: "Fin", render: (semester) => semester.end_date },
+    {
+      header: "Estado",
+      render: (semester) => (semester.is_active ? "Activo" : "Inactivo"),
+    },
+    {
+      header: "Acciones",
+      render: (semester) => (
+        <button onClick={() => navigate(`/semesters/update/${semester.id}`)}>
+          Editar
+        </button>
+      ),
+    },
+  ];
+
   return (
-    <div>
-      {' '}
-      <h2>Lista de Semestres</h2>{' '}
-      <button
-        onClick={handleCreate}
-        className="inline-flex items-center justify-center bg-primary py-2 px-4 text-sm font-medium text-white rounded-md hover:bg-opacity-90 transition"
-      >
-        {' '}
-        Crear{' '}
-      </button>{' '}
-    </div>
+    <>
+      <AcademicHeader
+        title="Gestión de semestres"
+        description="Administra los semestres asociados a las carreras."
+        buttonText="Crear semestre"
+        onButtonClick={() =>
+          navigate(careerId ? `/semesters/create?careerId=${careerId}` : "/semesters/create")
+        }
+      />
+
+      <EntityTable columns={columns} data={semesters} />
+    </>
   );
 };
+
 export default SemestersList;

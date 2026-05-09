@@ -1,84 +1,66 @@
-/* Archivo: Frontend\src\interceptors\authInterceptor.ts
-   Proposito: Implementa la logica principal del archivo authInterceptor.
-*/
 import axios, { AxiosInstance, InternalAxiosRequestConfig } from "axios";
 import { LocalStorageProvider } from "../storage/LocalStorageProvider";
 import { StorageProvider } from "../storage/StorageProvider";
+import { STORAGE_KEYS } from "../storage/storageKeys";
 
 export class AuthInterceptor {
-    private api: AxiosInstance;
-    private storage: StorageProvider;
+  private api: AxiosInstance;
+  private storage: StorageProvider;
 
-    private EXCLUDED_ROUTES = ["/login", "/register"];
+  private EXCLUDED_ROUTES = ["/login", "/register"];
 
-    constructor() {
-        this.storage = new LocalStorageProvider();
+  constructor() {
+    this.storage = new LocalStorageProvider();
 
-        this.api = axios.create({
-            baseURL: import.meta.env.VITE_API_URL,
-            headers: { "Content-Type": "application/json" },
-        });
+    this.api = axios.create({
+      baseURL: import.meta.env.VITE_API_URL,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-        this.initializeInterceptors();
+    this.initializeInterceptors();
+  }
+
+  private handleRequest(config: InternalAxiosRequestConfig) {
+    const token = this.storage.getItem(STORAGE_KEYS.TOKEN);
+
+    if (this.EXCLUDED_ROUTES.some((route) => config.url?.includes(route))) {
+      return config;
     }
 
-    /**
-     * Interceptor de request
-     * - Agrega el token automáticamente si existe
-     * - Evita rutas públicas
-     */
-    private handleRequest(config: InternalAxiosRequestConfig) {
-        const token = this.storage.getItem("token");
-
-        // Evitar agregar token en rutas excluidas
-        if (this.EXCLUDED_ROUTES.some((route) => config.url?.includes(route))) {
-            return config;
-        }
-
-        // Agregar header Authorization
-        if (token) {
-            config.headers = config.headers || {};
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-
-        return config;
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
-    /**
-     * Interceptor de errores
-     * - Maneja sesiones expiradas (401)
-     */
-    private handleResponseError(error: any) {
-        if (error.response?.status === 401) {
-            console.log("No autorizado, redirigiendo a login...");
-            window.location.href = "/auth/signin";
-        }
+    return config;
+  }
 
-        return Promise.reject(error);
+  private handleResponseError(error: any) {
+    if (error.response?.status === 401) {
+      this.storage.removeItem(STORAGE_KEYS.TOKEN);
+      window.location.href = "/auth/signin";
     }
 
-    /**
-     * Inicializa interceptores
-     */
-    private initializeInterceptors() {
-        this.api.interceptors.request.use(
-            this.handleRequest.bind(this),
-            (error) => Promise.reject(error)
-        );
+    return Promise.reject(error);
+  }
 
-        this.api.interceptors.response.use(
-            (response) => response,
-            this.handleResponseError.bind(this)
-        );
-    }
+  private initializeInterceptors() {
+    this.api.interceptors.request.use(
+      this.handleRequest.bind(this),
+      (error) => Promise.reject(error)
+    );
 
-    /**
-     * Expone instancia de axios
-     */
-    public get instance(): AxiosInstance {
-        return this.api;
-    }
+    this.api.interceptors.response.use(
+      (response) => response,
+      this.handleResponseError.bind(this)
+    );
+  }
+
+  public get instance(): AxiosInstance {
+    return this.api;
+  }
 }
 
-// Instancia global reutilizable
 export const api = new AuthInterceptor().instance;

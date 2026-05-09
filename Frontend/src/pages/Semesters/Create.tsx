@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
+
 import { Career } from "../../models/Career";
 import { Semester } from "../../models/Semester";
 import { careerService } from "../../services/careerService";
-import { semesterService } from "../../services/semesterService";
+import { academicBusiness } from "../../business/academicBusiness";
 import AcademicHeader from "../../components/academic/AcademicHeader";
 import SemesterForm from "../../components/academic/SemesterForm";
 
 const SemesterCreate: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const careerId = searchParams.get("careerId");
 
   const [careers, setCareers] = useState<Career[]>([]);
@@ -25,19 +27,33 @@ const SemesterCreate: React.FC = () => {
   };
 
   const handleSubmit = async (semester: Semester) => {
-    if (semester.start_date >= semester.end_date) {
-      await Swal.fire("Error", "La fecha de inicio debe ser menor que la fecha final.", "error");
-      return;
-    }
+    try {
+      const created = await academicBusiness.createSemester({
+        ...semester,
+        career_id: careerId ?? semester.career_id,
+      });
 
-    const created = await semesterService.createSemester({
-      ...semester,
-      career_id: careerId ?? semester.career_id,
-    });
+      if (created) {
+        await Swal.fire(
+          "Correcto",
+          "Semestre creado correctamente.",
+          "success"
+        );
 
-    if (created) {
-      await Swal.fire("Correcto", "Semestre creado correctamente.", "success");
-      navigate(careerId ? `/semesters?careerId=${careerId}` : "/semesters");
+        navigate(
+          careerId
+            ? `/semesters/list?careerId=${careerId}`
+            : "/semesters/list"
+        );
+      }
+    } catch (error) {
+      await Swal.fire(
+        "Error",
+        error instanceof Error
+          ? error.message
+          : "No se pudo crear el semestre.",
+        "error"
+      );
     }
   };
 
@@ -47,10 +63,27 @@ const SemesterCreate: React.FC = () => {
 
       <SemesterForm
         careers={careers}
-        initialData={careerId ? { career_id: careerId } as Semester : undefined}
+        initialData={
+          careerId
+            ? ({
+                career_id: careerId,
+                name: "",
+                code: "",
+                start_date: "",
+                end_date: "",
+                is_active: false,
+              } as Semester)
+            : undefined
+        }
         submitText="Guardar"
         onSubmit={handleSubmit}
-        onCancel={() => navigate(careerId ? `/semesters?careerId=${careerId}` : "/semesters")}
+        onCancel={() =>
+          navigate(
+            careerId
+              ? `/semesters/list?careerId=${careerId}`
+              : "/semesters/list"
+          )
+        }
       />
     </>
   );

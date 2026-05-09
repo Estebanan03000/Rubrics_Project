@@ -1,97 +1,80 @@
-/* Archivo: services/securityService.ts
-   Proposito: Servicio para consumir la API desde securityService.
-*/
-import axios from 'axios';
-import { User } from '../models/User';
-import { StorageProvider } from '../storage/StorageProvider';
-import { LocalStorageProvider } from '../storage/LocalStorageProvider';
-import { store } from '../store/store';
-import { setUser } from '../store/userSlice';
+import { User } from "../models/User";
+import { LocalStorageProvider } from "../storage/LocalStorageProvider";
+import { StorageProvider } from "../storage/StorageProvider";
+import { STORAGE_KEYS } from "../storage/storageKeys";
+import { store } from "../store/store";
+import { setUser } from "../store/userSlice";
+import { api } from "../interceptors/authInterceptor";
+
+interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+interface LoginResponse {
+  token: string;
+  user?: User;
+}
 
 class SecurityService extends EventTarget {
-  private readonly keyToken: string;
-  private readonly userKey: string;
-  private readonly API_URL: string;
-  private user: User | null;
   private storage: StorageProvider;
+  private user: User | null;
 
   constructor(storage: StorageProvider = new LocalStorageProvider()) {
     super();
-
     this.storage = storage;
-    this.keyToken = 'token';
-    this.userKey = 'user';
-    this.API_URL = import.meta.env.VITE_API_URL_SECURITY || '';
-    this.user = this.loadStoredUser();
-  }
-
-  private loadStoredUser(): User | null {
-    const storedUser = this.storage.getItem(this.userKey);
-
-    if (!storedUser) {
-      return null;
-    }
-
-    try {
-      return JSON.parse(storedUser);
-    } catch (error) {
-      console.error('Error parsing stored user:', error);
-      this.storage.removeItem(this.userKey);
-      return null;
-    }
-  }
-
-  async login(user: User) {
-    console.log('llamando api ' + `${this.API_URL}/login`);
-    const response = await axios.post(`${this.API_URL}/login`, user, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (response.status !== 200) {
-      throw new Error(`Login failed with status ${response.status}`);
-    }
-
-    const data = response.data;
-
-    this.user = data.user;
-
-    // Ajusta esto según la estructura real de la respuesta
-    this.storage.setItem(this.userKey, JSON.stringify(this.user));
-
-    if (data?.token) {
-      this.storage.setItem(this.keyToken, data.token);
-    }
-
-    store.dispatch(setUser(this.user));
-    this.dispatchEvent(new CustomEvent('userChange', { detail: this.user }));
-
-    return this.user;
-  }
-
-  getUser() {
-    return this.user;
-  }
-
-  logout() {
     this.user = null;
+  }
 
-    this.storage.removeItem(this.userKey);
-    this.storage.removeItem(this.keyToken);
+  async login(credentials: LoginCredentials): Promise<User | null> {
+    const response = await api.post<LoginResponse>("/login", credentials);
 
-    this.dispatchEvent(new CustomEvent('userChange', { detail: null }));
+    const { token, user } = response.data;
+
+    if (!token) {
+      throw new Error("El backend no devolvió token de autenticación.");
+    }
+
+    this.storage.setItem(STORAGE_KEYS.TOKEN, token);
+
+    this.user = user ?? null;
+    store.dispatch(setUser(this.user));
+
+    this.dispatchEvent(
+      new CustomEvent("userChange", {
+        detail: this.user,
+      })
+    );
+
+    return this.user;
+  }
+
+  logout(): void {
+    this.user = null;
+    this.storage.removeItem(STORAGE_KEYS.TOKEN);
     store.dispatch(setUser(null));
+
+    this.dispatchEvent(
+      new CustomEvent("userChange", {
+        detail: null,
+      })
+    );
+
+    window.location.href = "/auth/signin";
   }
 
-  isAuthenticated() {
-    return this.storage.getItem(this.keyToken) !== null;
+  isAuthenticated(): boolean {
+    return this.storage.getItem(STORAGE_KEYS.TOKEN) !== null;
   }
 
-  getToken() {
-    return this.storage.getItem(this.keyToken);
+  getToken(): string | null {
+    return this.storage.getItem(STORAGE_KEYS.TOKEN);
+  }
+
+  getUser(): User | null {
+    return this.user;
   }
 }
 
 export const userService = new SecurityService();
-
 export default userService;

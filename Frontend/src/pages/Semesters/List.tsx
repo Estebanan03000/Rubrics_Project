@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+
 import { Semester } from "../../models/Semester";
 import { semesterService } from "../../services/semesterService";
 import AcademicHeader from "../../components/academic/AcademicHeader";
@@ -8,13 +9,14 @@ import EntityTable, { TableColumn } from "../../components/academic/EntityTable"
 const SemestersList: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
   const careerId = searchParams.get("careerId");
 
   const [semesters, setSemesters] = useState<Semester[]>([]);
 
   useEffect(() => {
     loadSemesters();
-  }, []);
+  }, [careerId]);
 
   const loadSemesters = async () => {
     const response = await semesterService.getSemesters();
@@ -27,10 +29,22 @@ const SemestersList: React.FC = () => {
   };
 
   const columns: TableColumn<Semester>[] = [
-    { header: "Nombre", render: (semester) => semester.name },
-    { header: "Código", render: (semester) => semester.code },
-    { header: "Inicio", render: (semester) => semester.start_date },
-    { header: "Fin", render: (semester) => semester.end_date },
+    {
+      header: "Nombre",
+      render: (semester) => semester.name,
+    },
+    {
+      header: "Código",
+      render: (semester) => semester.code,
+    },
+    {
+      header: "Inicio",
+      render: (semester) => semester.start_date,
+    },
+    {
+      header: "Fin",
+      render: (semester) => semester.end_date,
+    },
     {
       header: "Estado",
       render: (semester) => (semester.is_active ? "Activo" : "Inactivo"),
@@ -52,7 +66,11 @@ const SemestersList: React.FC = () => {
         description="Administra los semestres asociados a las carreras."
         buttonText="Crear semestre"
         onButtonClick={() =>
-          navigate(careerId ? `/semesters/create?careerId=${careerId}` : "/semesters/create")
+          navigate(
+            careerId
+              ? `/semesters/create?careerId=${careerId}`
+              : "/semesters/create"
+          )
         }
       />
 

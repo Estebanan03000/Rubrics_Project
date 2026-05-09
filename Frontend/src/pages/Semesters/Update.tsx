@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+
 import { Career } from "../../models/Career";
 import { Semester } from "../../models/Semester";
 import { careerService } from "../../services/careerService";
 import { semesterService } from "../../services/semesterService";
+import { academicBusiness } from "../../business/academicBusiness";
 import AcademicHeader from "../../components/academic/AcademicHeader";
 import SemesterForm from "../../components/academic/SemesterForm";
 
@@ -32,16 +34,30 @@ const SemesterUpdate: React.FC = () => {
   const handleSubmit = async (data: Semester) => {
     if (!id) return;
 
-    if (data.start_date >= data.end_date) {
-      await Swal.fire("Error", "La fecha de inicio debe ser menor que la fecha final.", "error");
-      return;
-    }
+    try {
+      const updated = await academicBusiness.updateSemester(id, data);
 
-    const updated = await semesterService.updateSemester(id, data);
+      if (updated) {
+        await Swal.fire(
+          "Correcto",
+          "Semestre actualizado correctamente.",
+          "success"
+        );
 
-    if (updated) {
-      await Swal.fire("Correcto", "Semestre actualizado correctamente.", "success");
-      navigate("/semesters");
+        navigate(
+          data.career_id
+            ? `/semesters/list?careerId=${data.career_id}`
+            : "/semesters/list"
+        );
+      }
+    } catch (error) {
+      await Swal.fire(
+        "Error",
+        error instanceof Error
+          ? error.message
+          : "No se pudo actualizar el semestre.",
+        "error"
+      );
     }
   };
 
@@ -55,7 +71,13 @@ const SemesterUpdate: React.FC = () => {
           careers={careers}
           submitText="Actualizar"
           onSubmit={handleSubmit}
-          onCancel={() => navigate("/semesters")}
+          onCancel={() =>
+            navigate(
+              semester.career_id
+                ? `/semesters/list?careerId=${semester.career_id}`
+                : "/semesters/list"
+            )
+          }
         />
       )}
     </>

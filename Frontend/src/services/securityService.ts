@@ -1,12 +1,12 @@
 import { User } from "../models/User";
-import { LocalStorageProvider } from "../storage/LocalStorageProvider";
 import { StorageProvider } from "../storage/StorageProvider";
+import { LocalStorageProvider } from "../storage/LocalStorageProvider";
 import { STORAGE_KEYS } from "../storage/storageKeys";
 import { store } from "../store/store";
 import { setUser } from "../store/userSlice";
 import { api } from "../interceptors/authInterceptor";
 
-interface LoginCredentials {
+export interface LoginCredentials {
   email: string;
   password: string;
 }
@@ -17,8 +17,8 @@ interface LoginResponse {
 }
 
 class SecurityService extends EventTarget {
-  private storage: StorageProvider;
   private user: User | null;
+  private storage: StorageProvider;
 
   constructor(storage: StorageProvider = new LocalStorageProvider()) {
     super();
@@ -38,6 +38,7 @@ class SecurityService extends EventTarget {
     this.storage.setItem(STORAGE_KEYS.TOKEN, token);
 
     this.user = user ?? null;
+
     store.dispatch(setUser(this.user));
 
     this.dispatchEvent(
@@ -49,9 +50,15 @@ class SecurityService extends EventTarget {
     return this.user;
   }
 
+  getUser(): User | null {
+    return this.user;
+  }
+
   logout(): void {
     this.user = null;
+
     this.storage.removeItem(STORAGE_KEYS.TOKEN);
+
     store.dispatch(setUser(null));
 
     this.dispatchEvent(
@@ -69,10 +76,6 @@ class SecurityService extends EventTarget {
 
   getToken(): string | null {
     return this.storage.getItem(STORAGE_KEYS.TOKEN);
-  }
-
-  getUser(): User | null {
-    return this.user;
   }
 }
 

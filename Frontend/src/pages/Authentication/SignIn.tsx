@@ -5,7 +5,6 @@ import React from 'react';
 
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { User } from '../../models/User';
 import SecurityService from '../../services/securityService';
 import { LoginCredentials } from "../../services/securityService";
 
@@ -252,7 +251,7 @@ const SignIn: React.FC = () => {
                     >
                       Login
                     </button>
-                    <button className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
+                    <button type="button" className="flex w-full items-center justify-center gap-3.5 rounded-lg border border-stroke bg-gray p-4 hover:bg-opacity-50 dark:border-strokedark dark:bg-meta-4 dark:hover:bg-opacity-50">
                       <span>
                         <svg
                           width="20"

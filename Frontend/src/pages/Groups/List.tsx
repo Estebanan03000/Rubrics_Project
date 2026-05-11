@@ -1,60 +1,120 @@
-/* Archivo: pages/Groups/List.tsx   Proposito: Pagina para listar y gestionar registros de Groups.*/
-import React, { useEffect, useState } from 'react';
-import { Group } from '../../models/Group';
-import GenericTable from '../../components/GenericTable';
-import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
-import { groupService } from '../../services/groupService';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
+import AcademicHeader from "../../components/academic/AcademicHeader";
+import EntityTable, { TableColumn } from "../../components/academic/EntityTable";
+
+import { Group } from "../../models/Group";
+import { Subject } from "../../models/Subject";
+import { Teacher } from "../../models/Teacher";
+
+import { groupService } from "../../services/groupService";
+import { subjectService } from "../../services/subjectService";
+import { teacherService } from "../../services/teacherService";
+
 const GroupsList: React.FC = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState<Group[]>([]);
+
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [teachers, setTeachers] = useState<Teacher[]>([]);
+
   useEffect(() => {
-    fetchData();
+    loadData();
   }, []);
-  const fetchData = async () => {
-    const groups = await groupService.getGroups();
-    setData(groups);
-  };
-  const handleAction = (action: string, item: Group) => {
-    if (action === 'edit') {
-      navigate(`/groups/update/${item.id}`);
-    } else if (action === 'delete') {
-      deleteGroup(item.id ? item.id : '0');
+
+  const loadData = async () => {
+    try {
+      const [groupsResponse, subjectsResponse, teachersResponse] =
+        await Promise.all([
+          groupService.getGroups(),
+          subjectService.getSubjects(),
+          teacherService.getTeachers(),
+        ]);
+
+      setGroups(groupsResponse);
+      setSubjects(subjectsResponse);
+      setTeachers(teachersResponse);
+    } catch {
+      await Swal.fire("Error", "No se pudieron cargar los grupos.", "error");
     }
   };
-  const deleteGroup = async (id: string) => {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¡No podrás revertir esto!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const success = await groupService.deleteGroup(id);
-        if (success) {
-          Swal.fire('¡Eliminado!', 'El grupo ha sido eliminado.', 'success');
-          fetchData();
-        }
-      }
-    });
+
+  const getSubjectName = (subjectId?: string) => {
+    const subject = subjects.find((item) => item.id === subjectId);
+    return subject ? `${subject.name} (${subject.code})` : "Sin asignatura";
   };
-  const handleCreate = () => {
-    navigate('/groups/create');
+
+  const getTeacherName = (teacherId?: string) => {
+    const teacher = teachers.find((item) => item.id === teacherId);
+
+    return teacher
+      ? `${teacher.first_name ?? ""} ${teacher.last_name ?? ""}`.trim()
+      : "Sin asignar";
   };
+
+  const columns: TableColumn<Group>[] = [
+    {
+      header: "Código",
+      render: (group) => group.group_code ?? "Sin código",
+    },
+    {
+      header: "Grupo",
+      render: (group) => group.name ?? "Sin nombre",
+    },
+    {
+      header: "Asignatura",
+      render: (group) => getSubjectName(group.subject_id),
+    },
+    {
+      header: "Cupos",
+      render: (group) => group.capacity ?? "-",
+    },
+    {
+      header: "Docente",
+      render: (group) => getTeacherName(group.teacher_id),
+    },
+    {
+      header: "Acciones",
+      render: (group) => (
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/groups/update/${group.id}`)}
+            className="rounded border border-stroke px-3 py-1 text-sm"
+          >
+            Editar
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate(`/groups/assign-teacher?groupId=${group.id}`)}
+            className="rounded bg-primary px-3 py-1 text-sm text-white"
+          >
+            Asignar docente
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div>
-      {' '}
-      <h2>Lista de Grupos</h2>{' '}
-      <button
-        onClick={handleCreate}
-        className="inline-flex items-center justify-center bg-primary py-2 px-4 text-sm font-medium text-white rounded-md hover:bg-opacity-90 transition"
-      >
-        {' '}
-        Crear{' '}
-      </button>{' '}
-    </div>
+    <>
+      <AcademicHeader
+        title="Lista de grupos"
+        description="Consulta los grupos registrados y asigna docentes."
+        buttonText="Crear grupo"
+        onButtonClick={() => navigate("/groups/create")}
+      />
+
+      <EntityTable
+        columns={columns}
+        data={groups}
+        emptyMessage="No hay grupos registrados."
+      />
+    </>
   );
 };
+
 export default GroupsList;

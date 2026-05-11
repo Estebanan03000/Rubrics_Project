@@ -9,4 +9,5 @@ export interface Teacher {
     phone?: string;
     identification?: string;
     specialty?: string;
+    is_active?: boolean;
 }

@@ -10,6 +10,7 @@ const emptyCriterion = (): RubricCriterionInput => ({
   name: "",
   description: "",
   weight: 0,
+  scales: [],
 });
 
 const RubricCriteriaEditor: React.FC<RubricCriteriaEditorProps> = ({
@@ -43,6 +44,60 @@ const RubricCriteriaEditor: React.FC<RubricCriteriaEditorProps> = ({
   const removeCriterion = (index: number) => {
     onChange(criteria.filter((_, itemIndex) => itemIndex !== index));
   };
+
+  const addScale = (criterionIndex: number) => {
+  const updated = [...criteria];
+
+  updated[criterionIndex] = {
+    ...updated[criterionIndex],
+    scales: [
+      ...updated[criterionIndex].scales,
+      {
+        name: "",
+        description: "",
+        value: 0,
+      },
+    ],
+  };
+
+  onChange(updated);
+};
+
+const updateScale = (
+  criterionIndex: number,
+  scaleIndex: number,
+  field: "name" | "description" | "value",
+  value: string | number
+) => {
+  const updated = [...criteria];
+
+  const updatedScales = [...updated[criterionIndex].scales];
+
+  updatedScales[scaleIndex] = {
+    ...updatedScales[scaleIndex],
+    [field]: field === "value" ? Number(value) : value,
+  };
+
+  updated[criterionIndex] = {
+    ...updated[criterionIndex],
+    scales: updatedScales,
+  };
+
+  onChange(updated);
+};
+
+const removeScale = (criterionIndex: number, scaleIndex: number) => {
+  const updated = [...criteria];
+
+  updated[criterionIndex] = {
+    ...updated[criterionIndex],
+    scales: updated[criterionIndex].scales.filter(
+      (_, index) => index !== scaleIndex
+    ),
+  };
+
+  onChange(updated);
+};
 
   return (
     <div className="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -136,6 +191,81 @@ const RubricCriteriaEditor: React.FC<RubricCriteriaEditorProps> = ({
                     }
                     className="w-full rounded border border-stroke px-4 py-2 dark:border-strokedark dark:bg-form-input"
                   />
+                </div>
+                <div className="mt-4 rounded border border-stroke p-4 dark:border-strokedark">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-black dark:text-white">
+                        Escalas del criterio
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        Cada criterio debe tener entre 2 y 5 escalas.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => addScale(index)}
+                      disabled={criterion.scales.length >= 5}
+                      className="rounded bg-primary px-3 py-1 text-sm text-white disabled:bg-gray-400"
+                    >
+                      Agregar escala
+                    </button>
+                  </div>
+
+                  {criterion.scales.length === 0 ? (
+                    <p className="text-sm text-red-500">
+                      Este criterio todavía no tiene escalas.
+                    </p>
+                  ) : (
+                    <div className="space-y-3">
+                      {criterion.scales.map((scale, scaleIndex) => (
+                        <div
+                          key={scaleIndex}
+                          className="grid grid-cols-1 gap-3 rounded border border-stroke p-3 dark:border-strokedark md:grid-cols-4"
+                        >
+                          <input
+                            type="text"
+                            value={scale.name}
+                            onChange={(event) =>
+                              updateScale(index, scaleIndex, "name", event.target.value)
+                            }
+                            placeholder="Nombre de escala"
+                            className="rounded border border-stroke px-3 py-2 dark:border-strokedark dark:bg-form-input"
+                          />
+
+                          <input
+                            type="text"
+                            value={scale.description}
+                            onChange={(event) =>
+                              updateScale(index, scaleIndex, "description", event.target.value)
+                            }
+                            placeholder="Descripción"
+                            className="rounded border border-stroke px-3 py-2 dark:border-strokedark dark:bg-form-input"
+                          />
+
+                          <input
+                            type="number"
+                            min="0"
+                            value={scale.value}
+                            onChange={(event) =>
+                              updateScale(index, scaleIndex, "value", event.target.value)
+                            }
+                            placeholder="Valor"
+                            className="rounded border border-stroke px-3 py-2 dark:border-strokedark dark:bg-form-input"
+                          />
+
+                          <button
+                            type="button"
+                            onClick={() => removeScale(index, scaleIndex)}
+                            className="rounded border border-red-500 px-3 py-2 text-red-500"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

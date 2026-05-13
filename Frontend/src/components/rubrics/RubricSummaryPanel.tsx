@@ -1,28 +1,28 @@
 import React from "react";
-import { Subject } from "../../models/Subject";
 import { RubricCriterionInput } from "../../models/RubricCriterionInput";
 
 interface RubricSummaryPanelProps {
-  subjectId: string;
   title: string;
   criteria: RubricCriterionInput[];
-  subjects: Subject[];
 }
 
 const RubricSummaryPanel: React.FC<RubricSummaryPanelProps> = ({
-  subjectId,
   title,
   criteria,
-  subjects,
 }) => {
-  const subject = subjects.find((item) => item.id === subjectId);
-
   const totalWeight = criteria.reduce(
     (total, criterion) => total + Number(criterion.weight || 0),
     0
   );
 
-  const canPublish = criteria.length > 0 && totalWeight === 100;
+  const canPublish =
+    criteria.length > 0 &&
+    totalWeight === 100 &&
+    criteria.every(
+      (criterion) =>
+        criterion.scales.length >= 2 &&
+        criterion.scales.length <= 5
+    );
 
   return (
     <aside className="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -31,11 +31,6 @@ const RubricSummaryPanel: React.FC<RubricSummaryPanelProps> = ({
       </h3>
 
       <div className="space-y-3 text-sm">
-        <p>
-          <strong>Asignatura:</strong>{" "}
-          {subject ? `${subject.name} (${subject.code})` : "Sin seleccionar"}
-        </p>
-
         <p>
           <strong>Título:</strong> {title || "Sin título"}
         </p>
@@ -61,7 +56,7 @@ const RubricSummaryPanel: React.FC<RubricSummaryPanelProps> = ({
       >
         {canPublish
           ? "Lista para publicar."
-          : "No se puede publicar todavía. Debe tener criterios y suma de pesos igual a 100%."}
+          : "No se puede publicar todavía. Debe tener criterios, suma de pesos igual a 100% y entre 2 y 5 escalas por criterio."}
       </div>
     </aside>
   );

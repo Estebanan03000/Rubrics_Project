@@ -2,10 +2,9 @@
    Proposito: Implementa la logica principal del archivo Rubric.
 */
 export interface Rubric {
-    id?: string;
-    subject_id?: string;
-    title?: string;
-    description?: string;
-    is_public?: boolean;
-    is_archived?: boolean;
+  id?: string;
+  title: string;
+  description: string;
+  is_public: boolean;
+  is_archived?: boolean;
 }

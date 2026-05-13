@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -8,8 +8,6 @@ import RubricBasicForm from "../../components/rubrics/RubricBasicForm";
 import RubricCriteriaEditor from "../../components/rubrics/RubricCriteriaEditor";
 import RubricSummaryPanel from "../../components/rubrics/RubricSummaryPanel";
 
-import { Subject } from "../../models/Subject";
-import { subjectService } from "../../services/subjectService";
 import { rubricBusiness } from "../../business/rubricBusiness";
 import { RubricCriterionInput } from "../../models/RubricCriterionInput";
 import { RubricFormData } from "../../models/RubricFormData";
@@ -18,34 +16,15 @@ const CreateRubric: React.FC = () => {
   const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [subjects, setSubjects] = useState<Subject[]>([]);
 
   const [formData, setFormData] = useState<RubricFormData>({
-    subject_id: "",
     title: "",
     description: "",
     criteria: [],
   });
 
-  useEffect(() => {
-    loadSubjects();
-  }, []);
-
-  const loadSubjects = async () => {
-    try {
-      const response = await subjectService.getSubjects();
-      setSubjects(response.filter((subject: Subject) => subject.is_active !== false));
-    } catch {
-      await Swal.fire(
-        "Error",
-        "No se pudieron cargar las asignaturas.",
-        "error"
-      );
-    }
-  };
-
   const handleBasicChange = (
-    field: "subject_id" | "title" | "description",
+    field: "title" | "description",
     value: string
   ) => {
     setFormData((prev) => ({
@@ -67,10 +46,10 @@ const CreateRubric: React.FC = () => {
   );
 
   const validateStepOne = async () => {
-    if (!formData.subject_id || !formData.title.trim() || !formData.description.trim()) {
+    if (!formData.title.trim() || !formData.description.trim()) {
       await Swal.fire(
         "Campos incompletos",
-        "Debe seleccionar asignatura, ingresar título y descripción.",
+        "Debe ingresar título y descripción.",
         "warning"
       );
 
@@ -166,8 +145,6 @@ const CreateRubric: React.FC = () => {
         <div className="xl:col-span-2">
           {currentStep === 1 && (
             <RubricBasicForm
-              subjects={subjects}
-              subjectId={formData.subject_id}
               title={formData.title}
               description={formData.description}
               onChange={handleBasicChange}
@@ -275,8 +252,6 @@ const CreateRubric: React.FC = () => {
         </div>
 
         <RubricSummaryPanel
-          subjects={subjects}
-          subjectId={formData.subject_id}
           title={formData.title}
           criteria={formData.criteria}
         />

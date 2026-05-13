@@ -3,6 +3,7 @@ import { RubricCriterionInput } from "../models/RubricCriterionInput";
 import { RubricFormData } from "../models/RubricFormData";
 import { rubricService } from "../services/rubricService";
 import { criterionService } from "../services/criterionService";
+import { scaleService } from "../services/scaleService";
 
 class RubricBusiness {
   private getTotalWeight(criteria: RubricCriterionInput[]): number {
@@ -12,10 +13,6 @@ class RubricBusiness {
   }
 
   private validateBasicData(data: RubricFormData): void {
-    if (!data.subject_id) {
-      throw new Error("Debe seleccionar una asignatura.");
-    }
-
     if (!data.title.trim()) {
       throw new Error("El título de la rúbrica es obligatorio.");
     }
@@ -34,12 +31,20 @@ class RubricBusiness {
       (criterion) =>
         !criterion.name.trim() ||
         !criterion.description.trim() ||
-        Number(criterion.weight) <= 0
+        Number(criterion.weight) <= 0 ||
+        criterion.scales.length < 2 ||
+        criterion.scales.length > 5 ||
+        criterion.scales.some(
+          (scale) =>
+            !scale.name.trim() ||
+            !scale.description.trim() ||
+            Number(scale.value) <= 0
+        )
     );
 
     if (hasInvalidCriterion) {
       throw new Error(
-        "Todos los criterios deben tener nombre, descripción y peso mayor a cero."
+        "Todos los criterios deben tener nombre, descripción, peso mayor a cero y entre 2 y 5 escalas válidas."
       );
     }
 
@@ -63,7 +68,6 @@ class RubricBusiness {
     }
 
     const createdRubric = await rubricService.createRubric({
-      subject_id: data.subject_id,
       title: data.title.trim(),
       description: data.description.trim(),
       is_public: publish,
@@ -91,6 +95,21 @@ class RubricBusiness {
           throw new Error(
             "La rúbrica fue creada, pero ocurrió un error creando sus criterios."
           );
+        }
+
+        for (const scale of criterion.scales) {
+          const createdScale = await scaleService.createScale({
+            criterion_id: createdCriterion.id,
+            name: scale.name.trim(),
+            description: scale.description.trim(),
+            value: Number(scale.value),
+          });
+
+          if (!createdScale) {
+            throw new Error(
+              "La rúbrica fue creada, pero ocurrió un error creando las escalas."
+            );
+          }
         }
       }
     }

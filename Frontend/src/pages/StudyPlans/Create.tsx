@@ -1,90 +1,159 @@
-/* Archivo: pages/StudyPlans/Create.tsx   Proposito: Pagina para crear registros de StudyPlans.*/
-import React, { useState } from 'react';
-import { StudyPlan } from '../../models/StudyPlan';
-import Swal from 'sweetalert2';
-import Breadcrumb from '../../components/Breadcrumb';
-import { useNavigate } from 'react-router-dom';
-import { studyPlanService } from '../../services/studyPlanService';
-const CreateStudyPlan = () => {
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
+import AcademicHeader from "../../components/academic/AcademicHeader";
+import { Career } from "../../models/Career";
+import { StudyPlan } from "../../models/StudyPlan";
+import { careerService } from "../../services/careerService";
+import { studyPlanBusiness } from "../../business/studyPlanBusiness";
+
+const CreateStudyPlan: React.FC = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<StudyPlan>({});
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+  const [careers, setCareers] = useState<Career[]>([]);
+
+  const [formData, setFormData] = useState<StudyPlan>({
+    career_id: "",
+    name: "",
+    year: new Date().getFullYear(),
+    is_published: false,
+    is_active: true,
+  });
+
+  useEffect(() => {
+    loadCareers();
+  }, []);
+
+  const loadCareers = async () => {
+    const response = await careerService.getCareers();
+    setCareers(response.filter((career) => career.is_active));
   };
-  const handleCreateStudyPlan = async (e: React.FormEvent) => {
-    e.preventDefault();
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = event.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]:
+        type === "checkbox"
+          ? (event.target as HTMLInputElement).checked
+          : name === "year"
+          ? Number(value)
+          : value,
+    }));
+  };
+
+  const handleCreateStudyPlan = async (event: React.FormEvent) => {
+    event.preventDefault();
+
     try {
-      const createdStudyPlan = await studyPlanService.createStudyPlan(formData);
-      if (createdStudyPlan) {
-        Swal.fire({
-          title: 'Completado',
-          text: 'Se ha creado correctamente el plan de estudio',
-          icon: 'success',
-          timer: 3000,
-        });
-        navigate('/studyplans/list');
-      } else {
-        Swal.fire({
-          title: 'Error',
-          text: 'Existe un problema al momento de crear el plan de estudio',
-          icon: 'error',
-          timer: 3000,
-        });
+      const createdStudyPlan = await studyPlanBusiness.createStudyPlan(formData);
+
+      if (createdStudyPlan?.id) {
+        await Swal.fire(
+          "Completado",
+          "Se ha creado correctamente el plan de estudio.",
+          "success"
+        );
+
+        navigate(`/studyplans/update/${createdStudyPlan.id}`);
       }
     } catch (error) {
-      Swal.fire({
-        title: 'Error',
-        text: 'Existe un problema al momento de crear el plan de estudio',
-        icon: 'error',
-        timer: 3000,
-      });
+      await Swal.fire(
+        "Error",
+        error instanceof Error
+          ? error.message
+          : "No se pudo crear el plan de estudios.",
+        "error"
+      );
     }
   };
+
   return (
-    <div>
-      {' '}
-      <Breadcrumb pageName="Crear Plan de Estudio" />{' '}
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-        {' '}
-        <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-          {' '}
-          <h3 className="font-medium text-black dark:text-white">
-            Formulario de Plan de Estudio
-          </h3>{' '}
-        </div>{' '}
-        <form onSubmit={handleCreateStudyPlan}>
-          {' '}
-          <div className="p-6.5">
-            {' '}
-            <div className="mb-4.5">
-              {' '}
-              <label className="mb-3 block text-sm font-medium text-black dark:text-white">
-                {' '}
-                Nombre{' '}
-              </label>{' '}
-              <input
-                type="text"
-                name="name"
-                value={formData.name || ''}
-                onChange={handleChange}
-                placeholder="Ingrese el nombre del plan de estudio"
-                className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-              />{' '}
-            </div>{' '}
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90"
-            >
-              {' '}
-              Crear{' '}
-            </button>{' '}
-          </div>{' '}
-        </form>{' '}
-      </div>{' '}
-    </div>
+    <>
+      <AcademicHeader title="Crear plan de estudio" />
+
+      <form
+        onSubmit={handleCreateStudyPlan}
+        className="rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark"
+      >
+        <div className="mb-4">
+          <label className="mb-2 block font-medium text-black dark:text-white">
+            Carrera
+          </label>
+
+          <select
+            name="career_id"
+            value={formData.career_id}
+            onChange={handleChange}
+            className="w-full rounded border border-stroke px-4 py-2 dark:border-strokedark dark:bg-form-input"
+          >
+            <option value="">Seleccione una carrera</option>
+            {careers.map((career) => (
+              <option key={career.id} value={career.id}>
+                {career.name} ({career.code})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="mb-4">
+          <label className="mb-2 block font-medium text-black dark:text-white">
+            Nombre del plan
+          </label>
+
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full rounded border border-stroke px-4 py-2 dark:border-strokedark dark:bg-form-input"
+          />
+        </div>
+
+        <div className="mb-4">
+          <label className="mb-2 block font-medium text-black dark:text-white">
+            Año
+          </label>
+
+          <input
+            type="number"
+            name="year"
+            value={formData.year}
+            onChange={handleChange}
+            className="w-full rounded border border-stroke px-4 py-2 dark:border-strokedark dark:bg-form-input"
+          />
+        </div>
+
+        <label className="mb-6 flex items-center gap-2">
+          <input
+            type="checkbox"
+            name="is_published"
+            checked={formData.is_published}
+            onChange={handleChange}
+          />
+          Publicar plan
+        </label>
+
+        <div className="flex gap-3">
+          <button type="submit" className="rounded bg-primary px-4 py-2 text-white">
+            Crear
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate("/studyplans/list")}
+            className="rounded border border-stroke px-4 py-2"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </>
   );
 };
+
 export default CreateStudyPlan;

@@ -1,34 +1,70 @@
-/* Archivo: pages/Grades/List.tsx   Proposito: Pagina para listar y gestionar registros de Grades.*/
-import React, { useEffect, useState } from 'react';
-import { Grade } from '../../models/Grade';
-import Swal from 'sweetalert2';
-import { useNavigate } from 'react-router-dom';
-import { gradeService } from '../../services/gradeService';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import AcademicHeader from "../../components/academic/AcademicHeader";
+import EntityTable, { TableColumn } from "../../components/academic/EntityTable";
+import { Evaluation } from "../../models/Evaluation";
+import { evaluationService } from "../../services/evaluationService";
+
 const GradesList: React.FC = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState<Grade[]>([]);
+  const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
+
   useEffect(() => {
-    fetchData();
+    loadEvaluations();
   }, []);
-  const fetchData = async () => {
-    const grades = await gradeService.getGrades();
-    setData(grades);
+
+  const loadEvaluations = async () => {
+    const response = await evaluationService.getEvaluations();
+    setEvaluations(response.filter((evaluation) => Boolean(evaluation.rubric_id)));
   };
-  const handleCreate = () => {
-    navigate('/grades/create');
-  };
+
+  const columns: TableColumn<Evaluation>[] = [
+    {
+      header: "Evaluación",
+      render: (evaluation) => evaluation.name,
+    },
+    {
+      header: "Grupo",
+      render: (evaluation) => evaluation.group_id,
+    },
+    {
+      header: "Rúbrica",
+      render: (evaluation) =>
+        evaluation.rubric_id ? "Rúbrica asociada" : "Sin rúbrica",
+    },
+    {
+      header: "Ponderación",
+      render: (evaluation) => `${evaluation.weight}%`,
+    },
+    {
+      header: "Acciones",
+      render: (evaluation) => (
+        <button
+          type="button"
+          onClick={() => navigate(`/grades/evaluation/${evaluation.id}`)}
+          className="rounded bg-primary px-3 py-1 text-sm text-white"
+        >
+          Calificar estudiantes
+        </button>
+      ),
+    },
+  ];
+
   return (
-    <div>
-      {' '}
-      <h2>Lista de Calificaciones</h2>{' '}
-      <button
-        onClick={handleCreate}
-        className="inline-flex items-center justify-center bg-primary py-2 px-4 text-sm font-medium text-white rounded-md hover:bg-opacity-90 transition"
-      >
-        {' '}
-        Crear{' '}
-      </button>{' '}
-    </div>
+    <>
+      <AcademicHeader
+        title="Calificaciones"
+        description="Selecciona una evaluación con rúbrica asociada para calificar estudiantes."
+      />
+
+      <EntityTable
+        columns={columns}
+        data={evaluations}
+        emptyMessage="No hay evaluaciones con rúbrica asociada."
+      />
+    </>
   );
 };
+
 export default GradesList;

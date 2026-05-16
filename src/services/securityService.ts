@@ -27,7 +27,35 @@ class SecurityService extends EventTarget {
   }
 
   async login(credentials: LoginCredentials): Promise<User | null> {
-    const response = await api.post<LoginResponse>("/login", credentials);
+    const response = await api.post("/api/auth/login", credentials);
+
+    const backendData = response.data?.data;
+
+    if (!backendData?.access_token) {
+      throw new Error("El backend no devolvió access_token.");
+    }
+
+    const token = backendData.access_token;
+    const user = backendData.user ?? null;
+
+    this.storage.setItem(STORAGE_KEYS.TOKEN, token);
+
+    this.user = user;
+    store.dispatch(setUser(this.user));
+
+    this.dispatchEvent(
+      new CustomEvent("userChange", {
+        detail: this.user,
+      })
+    );
+
+    return this.user;
+  }
+
+  async loginWithFirebaseToken(firebaseToken: string): Promise<User | null> {
+    const response = await api.post<LoginResponse>("/auth/firebase", {
+      token: firebaseToken,
+    });
 
     const { token, user } = response.data;
 
@@ -38,7 +66,6 @@ class SecurityService extends EventTarget {
     this.storage.setItem(STORAGE_KEYS.TOKEN, token);
 
     this.user = user ?? null;
-
     store.dispatch(setUser(this.user));
 
     this.dispatchEvent(

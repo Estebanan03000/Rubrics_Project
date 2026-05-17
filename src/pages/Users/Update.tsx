@@ -1,75 +1,52 @@
-/* Archivo: pages/Users/Update.tsx
-   Proposito: Pagina para editar registros de Users.
-*/
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { userService } from '../../services/securityService';
-import Swal from 'sweetalert2';
+import Breadcrumb from '../../components/Breadcrumb';
+import UserForm from '../../components/users/UserForm';
 
 import { User } from '../../models/User';
-import Breadcrumb from '../../components/Breadcrumb';
-import UserFormValidator from '../../components/users/UserFormValidator';
+import { userService } from '../../services/userService';
 
-const UpdateUserPage = () => {
+export default function UpdateUser() {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const loadUser = async () => {
       if (!id) return;
 
-      const userData = await userService.getUserById(parseInt(id));
-      setUser(userData);
+      const data = await userService.getUserById(id);
+      setUser(data);
     };
 
-    fetchUser();
+    loadUser();
   }, [id]);
 
-  const handleUpdateUser = async (theUser: User) => {
-    try {
-      const updatedUser = await userService.updateUser(user?.id || 0, {
-        ...user,
-        ...theUser,
-      });
+  const handleUpdate = async (data: User) => {
+    if (!id) return;
 
-      if (updatedUser) {
-        Swal.fire({
-          title: 'Completado',
-          text: 'Se ha actualizado correctamente el registro',
-          icon: 'success',
-          timer: 3000,
-        });
-        navigate('/users/list');
-      } else {
-        Swal.fire({
-          title: 'Error',
-          text: 'Existe un problema al momento de actualizar el registro',
-          icon: 'error',
-          timer: 3000,
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        title: 'Error',
-        text: 'Existe un problema al momento de actualizar el registro',
-        icon: 'error',
-        timer: 3000,
-      });
+    try {
+      await userService.updateUser(id, data);
+      navigate('/users');
+    } catch (error: any) {
+      alert(
+        error?.response?.data?.detail ||
+          'Error actualizando usuario',
+      );
     }
   };
 
-  if (!user) {
-    return <div>Cargando...</div>;
-  }
+  if (!user) return <div>Cargando...</div>;
 
   return (
     <>
-      <Breadcrumb pageName="Actualizar Usuario" />
-      <UserFormValidator handleAction={handleUpdateUser} mode={2} user={user} />
+      <Breadcrumb pageName="Editar usuario" />
+
+      <div className="mx-auto max-w-2xl rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <UserForm initialData={user} onSubmit={handleUpdate} />
+      </div>
     </>
   );
-};
-
-export default UpdateUserPage;
+}

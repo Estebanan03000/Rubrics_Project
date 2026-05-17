@@ -1,60 +1,33 @@
-/* Archivo: pages/Users/Create.tsx
-   Proposito: Pagina para crear registros de Users.
-*/
-import React, { useState } from 'react'; // Asegúrate de importar useState
-import { User } from '../../models/User';
-import UserFormValidator from '../../components/users/UserFormValidator';
-
-import Swal from 'sweetalert2';
-import { userService } from '../../services/securityService';
-import Breadcrumb from '../../components/Breadcrumb';
 import { useNavigate } from 'react-router-dom';
 
-const App = () => {
+import Breadcrumb from '../../components/Breadcrumb';
+import UserForm from '../../components/users/UserForm';
+
+import { User } from '../../models/User';
+import { userService } from '../../services/userService';
+
+export default function CreateUser() {
   const navigate = useNavigate();
 
-  // Estado para almacenar el usuario a editar
-
-  // Lógica de creación
-  const handleCreateUser = async (user: User) => {
+  const handleCreate = async (data: User) => {
     try {
-      const createdUser = await userService.createUser(user);
-      if (createdUser) {
-        Swal.fire({
-          title: 'Completado',
-          text: 'Se ha creado correctamente el registro',
-          icon: 'success',
-          timer: 3000,
-        });
-        console.log('Usuario creado con éxito:', createdUser);
-        navigate('/users/list');
-      } else {
-        Swal.fire({
-          title: 'Error',
-          text: 'Existe un problema al momento de crear el registro',
-          icon: 'error',
-          timer: 3000,
-        });
-      }
-    } catch (error) {
-      Swal.fire({
-        title: 'Error',
-        text: 'Existe un problema al momento de crear el registro',
-        icon: 'error',
-        timer: 3000,
-      });
+      await userService.createUser(data);
+      navigate('/users');
+    } catch (error: any) {
+      alert(
+        error?.response?.data?.detail ||
+          'Error creando usuario',
+      );
     }
   };
-  return (
-    <div>
-      {/* Formulario para crear un nuevo usuario */}
-      <Breadcrumb pageName="Crear Usuario" />
-      <UserFormValidator
-        handleAction={handleCreateUser}
-        mode={1} // 1 significa creación
-      />
-    </div>
-  );
-};
 
-export default App;
+  return (
+    <>
+      <Breadcrumb pageName="Crear usuario" />
+
+      <div className="mx-auto max-w-2xl rounded-sm border border-stroke bg-white p-6 shadow-default dark:border-strokedark dark:bg-boxdark">
+        <UserForm onSubmit={handleCreate} />
+      </div>
+    </>
+  );
+}

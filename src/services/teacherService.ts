@@ -3,6 +3,7 @@ import { api } from '../interceptors/authInterceptor';
 import { Teacher } from '../models/Teacher';
 class TeacherService {
   private readonly API_URL = '/teachers';
+
   async getTeachers(): Promise<Teacher[]> {
     try {
       const response = await api.get<Teacher[]>(this.API_URL);
@@ -12,6 +13,7 @@ class TeacherService {
       return [];
     }
   }
+
   async getTeacherById(id: string): Promise<Teacher | null> {
     try {
       const response = await api.get<Teacher>(`${this.API_URL}/${id}`);
@@ -21,6 +23,7 @@ class TeacherService {
       return null;
     }
   }
+
   async createTeacher(teacher: Omit<Teacher, 'id'>): Promise<Teacher | null> {
     try {
       const response = await api.post<Teacher>(this.API_URL, teacher);
@@ -30,6 +33,7 @@ class TeacherService {
       return null;
     }
   }
+
   async updateTeacher(
     id: string,
     teacher: Partial<Teacher>,
@@ -42,6 +46,7 @@ class TeacherService {
       return null;
     }
   }
+  
   async deleteTeacher(id: string): Promise<boolean> {
     try {
       await api.delete(`${this.API_URL}/${id}`);

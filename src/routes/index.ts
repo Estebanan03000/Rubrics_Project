@@ -13,9 +13,12 @@ const Tables = lazy(() => import('../pages/Tables'));
 const Alerts = lazy(() => import('../pages/UiElements/Alerts'));
 const Buttons = lazy(() => import('../pages/UiElements/Buttons'));
 const Demo= lazy(() => import('../pages/Demo'));
-const UserCreate= lazy(() => import('../pages/Users/Create'));
-const UserUpdate= lazy(() => import('../pages/Users/Update'));
 const Posts= lazy(() => import('../pages/Posts/List'));
+
+// Users
+const Users = lazy(() => import('../pages/Users'));
+const UserCreate = lazy(() => import('../pages/Users/Create'));
+const UserUpdate = lazy(() => import('../pages/Users/Update'));
 
 // Rubrics
 const RubricsList = lazy(() => import('../pages/Rubrics/List'));
@@ -33,9 +36,9 @@ const TeachersCreate = lazy(() => import('../pages/Teachers/Create'));
 const TeachersUpdate = lazy(() => import('../pages/Teachers/Update'));
 
 // Subjects
-const SubjectsList = lazy(() => import('../pages/Subjects/List'));
-const SubjectsCreate = lazy(() => import('../pages/Subjects/Create'));
-const SubjectsUpdate = lazy(() => import('../pages/Subjects/Update'));
+const Subjects = lazy(() => import('../pages/Subjects'));
+const SubjectCreate = lazy(() => import('../pages/Subjects/Create'));
+const SubjectUpdate = lazy(() => import('../pages/Subjects/Update'));
 
 // Groups
 const GroupsList = lazy(() => import('../pages/Groups/List'));
@@ -91,28 +94,10 @@ const coreRoutes = [
     component: Demo,
   },
   {
-    path: '/users/create',
-    title: 'Create User',
-    component: UserCreate,
+    path: '/roles/list',
+    title: 'Role List',
+    component: lazy(() => import('../pages/Roles/List')),
   },
-  {
-    path: '/users/update/:id',
-    title: 'Edit User',
-    component: UserUpdate,
-  },
-
-  {
-      path: '/users/list',
-      title: 'User List',
-      component: lazy(() => import('../pages/Users/List')),
-    },
-    {
-      path: '/roles/list',
-      title: 'Role List',
-      component: lazy(() => import('../pages/Roles/List')),
-    },
-    
-  
   {
     path: '/posts/list',
     title: 'Posts',
@@ -163,7 +148,23 @@ const coreRoutes = [
     title: 'Buttons',
     component: Buttons,
   },
-
+  
+  // Users
+  {
+  path: '/users',
+  title: 'Usuarios',
+  component: Users,
+},
+{
+  path: '/users/create',
+  title: 'Crear usuario',
+  component: UserCreate,
+},
+{
+  path: '/users/update/:id',
+  title: 'Editar usuario',
+  component: UserUpdate,
+},
   // Rubrics
   { path: '/rubrics/list',       title: 'Rubrics List',    component: RubricsList },
   { path: '/rubrics/create',     title: 'Create Rubric',   component: RubricsCreate },
@@ -180,9 +181,21 @@ const coreRoutes = [
   { path: '/teachers/update/:id', title: 'Edit Teacher',    component: TeachersUpdate },
 
   // Subjects
-  { path: '/subjects/list',       title: 'Subjects List',   component: SubjectsList },
-  { path: '/subjects/create',     title: 'Create Subject',  component: SubjectsCreate },
-  { path: '/subjects/update/:id', title: 'Edit Subject',    component: SubjectsUpdate },
+  {
+  path: '/subjects',
+  title: 'Asignaturas',
+  component: Subjects,
+},
+{
+  path: '/subjects/create',
+  title: 'Crear asignatura',
+  component: SubjectCreate,
+},
+{
+  path: '/subjects/update/:id',
+  title: 'Editar asignatura',
+  component: SubjectUpdate,
+},
 
   // Groups
   { path: '/groups/list',       title: 'Groups List',   component: GroupsList },

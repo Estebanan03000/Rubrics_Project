@@ -3,6 +3,7 @@ import { api } from '../interceptors/authInterceptor';
 import { Career } from '../models/Career';
 class CareerService {
   private readonly API_URL = '/careers';
+  
   async getCareers(): Promise<Career[]> {
     try {
       const response = await api.get<Career[]>(this.API_URL);
@@ -12,6 +13,7 @@ class CareerService {
       return [];
     }
   }
+
   async getCareerById(id: string): Promise<Career | null> {
     try {
       const response = await api.get<Career>(`${this.API_URL}/${id}`);
@@ -21,6 +23,7 @@ class CareerService {
       return null;
     }
   }
+
   async createCareer(career: Omit<Career, 'id'>): Promise<Career | null> {
     try {
       const response = await api.post<Career>(this.API_URL, career);
@@ -30,6 +33,7 @@ class CareerService {
       return null;
     }
   }
+
   async updateCareer(
     id: string,
     career: Partial<Career>,
@@ -42,6 +46,7 @@ class CareerService {
       return null;
     }
   }
+
   async deleteCareer(id: string): Promise<boolean> {
     try {
       await api.delete(`${this.API_URL}/${id}`);
@@ -52,4 +57,5 @@ class CareerService {
     }
   }
 }
+
 export const careerService = new CareerService();

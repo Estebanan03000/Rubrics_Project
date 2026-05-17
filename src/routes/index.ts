@@ -70,7 +70,6 @@ const MyGradeDetail = lazy(() => import('../pages/MyGrades/Detail'));
 // Enrollments
 const EnrollmentsList = lazy(() => import('../pages/Enrollments/List'));
 const EnrollmentsCreate = lazy(() => import('../pages/Enrollments/Create'));
-const EnrollmentsUpdate = lazy(() => import('../pages/Enrollments/Update'));
 
 // Evaluations
 const EvaluationsList = lazy(() => import('../pages/Evaluations/List'));
@@ -229,9 +228,16 @@ const coreRoutes = [
   { path: '/my-grades/detail/:gradeId', title: 'My Grade Detail', component: MyGradeDetail },
 
   // Enrollments
-  { path: '/enrollments/list',       title: 'Enrollments List',   component: EnrollmentsList },
-  { path: '/enrollments/create',     title: 'Create Enrollment',  component: EnrollmentsCreate },
-  { path: '/enrollments/update/:id', title: 'Edit Enrollment',    component: EnrollmentsUpdate },
+  {
+    path: '/enrollments/list',
+    title: 'Inscripciones',
+    component: EnrollmentsList,
+  },
+  {
+    path: '/enrollments/create',
+    title: 'Inscribir estudiante',
+    component: EnrollmentsCreate,
+  },
 
   // Evaluations
   { path: '/evaluations/list',       title: 'Evaluations List',   component: EvaluationsList },

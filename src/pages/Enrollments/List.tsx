@@ -1,34 +1,113 @@
-/* Archivo: pages/Enrollments/List.tsx   Proposito: Pagina para listar y gestionar registros de Enrollments.*/
-import React, { useEffect, useState } from 'react';
-import { Enrollment } from '../../models/Enrollment';
-import Swal from 'sweetalert2';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+
+import Breadcrumb from '../../components/Breadcrumb';
+import GenericTable from '../../components/GenericTable';
+
+import { Enrollment } from '../../models/Enrollment';
 import { enrollmentService } from '../../services/enrollmentService';
-const EnrollmentsList: React.FC = () => {
+
+export default function EnrollmentsList() {
   const navigate = useNavigate();
-  const [data, setData] = useState<Enrollment[]>([]);
+
+  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
+
+  const loadEnrollments = async () => {
+    const data = await enrollmentService.getEnrollments();
+    setEnrollments(data);
+  };
+
   useEffect(() => {
-    fetchData();
+    loadEnrollments();
   }, []);
-  const fetchData = async () => {
-    const enrollments = await enrollmentService.getEnrollments();
-    setData(enrollments);
+
+  const tableData = enrollments.map((enrollment) => ({
+    id: enrollment.id,
+    student_id: enrollment.student_id || '',
+    group_id: enrollment.group_id || '',
+    enrollment_date: enrollment.enrollment_date || '',
+    status: enrollment.status || '',
+    original: enrollment,
+  }));
+
+  const columns = [
+    'student_id',
+    'group_id',
+    'enrollment_date',
+    'status',
+  ];
+
+  const actions = [
+    {
+      name: 'delete',
+      label: 'Cancelar',
+    },
+  ];
+
+  const handleCancel = async (id: string) => {
+    const result = await Swal.fire({
+      title: '¿Cancelar inscripción?',
+      text: 'La inscripción quedará cancelada, pero no será eliminada.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, cancelar',
+      cancelButtonText: 'Volver',
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await enrollmentService.cancelEnrollment(id);
+
+      await loadEnrollments();
+
+      Swal.fire(
+        'Cancelada',
+        'La inscripción fue cancelada correctamente.',
+        'success',
+      );
+    } catch (error: any) {
+      Swal.fire(
+        'Error',
+        error?.response?.data?.message ||
+          error?.response?.data?.detail ||
+          'No se pudo cancelar la inscripción.',
+        'error',
+      );
+    }
   };
-  const handleCreate = () => {
-    navigate('/enrollments/create');
+
+  const handleTableAction = (
+    action: string,
+    item: Record<string, any>,
+  ) => {
+    const enrollment = item.original as Enrollment;
+
+    if (action === 'delete' && enrollment.id) {
+      handleCancel(enrollment.id);
+    }
   };
+
   return (
-    <div>
-      {' '}
-      <h2>Lista de Inscripciones</h2>{' '}
-      <button
-        onClick={handleCreate}
-        className="inline-flex items-center justify-center bg-primary py-2 px-4 text-sm font-medium text-white rounded-md hover:bg-opacity-90 transition"
-      >
-        {' '}
-        Crear{' '}
-      </button>{' '}
-    </div>
+    <>
+      <Breadcrumb pageName="Inscripciones" />
+
+      <div className="mb-6 flex justify-end">
+        <button
+          onClick={() => navigate('/enrollments/create')}
+          className="rounded bg-primary px-5 py-2 text-sm text-white"
+        >
+          Nueva inscripción
+        </button>
+      </div>
+
+      <GenericTable
+        data={tableData}
+        columns={columns}
+        actions={actions}
+        onAction={handleTableAction}
+      />
+    </>
   );
-};
-export default EnrollmentsList;
+}

@@ -9,4 +9,5 @@ export interface Evaluation {
   name: string;
   description?: string;
   weight: number;
+  due_date?: string;
 }

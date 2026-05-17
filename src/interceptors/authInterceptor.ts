@@ -7,13 +7,13 @@ export class AuthInterceptor {
   private api: AxiosInstance;
   private storage: StorageProvider;
 
-  private EXCLUDED_ROUTES = ["/login", "/register"];
+  private EXCLUDED_ROUTES = ["/api/auth/login", "/api/auth/register-admin"];
 
   constructor() {
     this.storage = new LocalStorageProvider();
 
     this.api = axios.create({
-      baseURL: import.meta.env.VITE_API_URL,
+      baseURL: import.meta.env.VITE_API_URL || "/",
       headers: {
         "Content-Type": "application/json",
       },

@@ -60,6 +60,12 @@ const ScalesUpdate = lazy(() => import('../pages/Scales/Update'));
 const GradesList = lazy(() => import('../pages/Grades/List'));
 const GradesCreate = lazy(() => import('../pages/Grades/Create'));
 const GradesUpdate = lazy(() => import('../pages/Grades/Update'));
+const EvaluationStudents = lazy(() => import('../pages/Grades/EvaluationStudents'));
+const GradeStudent = lazy(() => import('../pages/Grades/GradeStudent'));
+
+// My Grades
+const MyGradesList = lazy(() => import('../pages/MyGrades/List'));
+const MyGradeDetail = lazy(() => import('../pages/MyGrades/Detail'));
 
 // Enrollments
 const EnrollmentsList = lazy(() => import('../pages/Enrollments/List'));
@@ -217,6 +223,10 @@ const coreRoutes = [
   { path: '/grades/list',       title: 'Grades List',   component: GradesList },
   { path: '/grades/create',     title: 'Create Grade',  component: GradesCreate },
   { path: '/grades/update/:id', title: 'Edit Grade',    component: GradesUpdate },
+  { path: '/grades/evaluation/:evaluationId', title: 'Evaluation Students', component: EvaluationStudents },
+  { path: '/grades/evaluation/:evaluationId/student/:enrollmentId', title: 'Grade Student', component: GradeStudent },
+  { path: '/my-grades/list',    title: 'My Grades',     component: MyGradesList },
+  { path: '/my-grades/detail/:gradeId', title: 'My Grade Detail', component: MyGradeDetail },
 
   // Enrollments
   { path: '/enrollments/list',       title: 'Enrollments List',   component: EnrollmentsList },

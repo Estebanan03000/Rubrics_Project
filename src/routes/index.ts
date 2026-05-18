@@ -71,6 +71,10 @@ const MyGradeDetail = lazy(() => import('../pages/MyGrades/Detail'));
 const EnrollmentsList = lazy(() => import('../pages/Enrollments/List'));
 const EnrollmentsCreate = lazy(() => import('../pages/Enrollments/Create'));
 
+// Registrations
+const RegistrationsList = lazy(() => import('../pages/Registrations/List'));
+const RegistrationsCreate = lazy(() => import('../pages/Registrations/Create'));
+
 // Evaluations
 const EvaluationRubricDetail = lazy(() => import('../pages/Evaluations/RubricDetail'));
 const AssociateRubric = lazy(() => import('../pages/Evaluations/AssociateRubric'));
@@ -240,7 +244,17 @@ const coreRoutes = [
     title: 'Inscribir estudiante',
     component: EnrollmentsCreate,
   },
-
+  // Registrations
+  {
+    path: '/registrations/list',
+    title: 'Matrículas',
+    component: RegistrationsList,
+  },
+  {
+    path: '/registrations/create',
+    title: 'Matricular estudiante',
+    component: RegistrationsCreate,
+  },
   // Evaluations
   {
     path: '/evaluations/associate-rubric',

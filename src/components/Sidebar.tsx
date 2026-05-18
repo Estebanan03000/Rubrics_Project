@@ -131,7 +131,7 @@ const menuSections: MenuSection[] = [
       },
       {
         label: "Matrículas",
-        path: "/enrollments/list",
+        path: "/registrations/list",
         icon: <HiOutlineArchiveBox />,
         roles: ["ADMIN"],
       },

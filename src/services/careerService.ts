@@ -7,7 +7,7 @@ type ApiResponse<T> = {
 };
 
 class CareerService {
-  private readonly API_URL = '/academic/careers';
+  private readonly API_URL = "/api/academic/careers";
 
   async getCareers(): Promise<Career[]> {
     try {

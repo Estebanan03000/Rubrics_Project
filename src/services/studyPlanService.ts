@@ -9,7 +9,7 @@ type ApiResponse<T> = {
 };
 
 class StudyPlanService {
-  private readonly API_URL = "/academic/study-plans";
+  private readonly API_URL = "/api/academic/study-plans";
 
   async getStudyPlans(): Promise<StudyPlan[]> {
     try {

@@ -1,13 +1,18 @@
 import { api } from "../interceptors/authInterceptor";
 import { Criterion } from "../models/Criterion";
 
+type ApiResponse<T> = {
+  data: T;
+  message?: string;
+};
+
 class CriterionService {
-  private readonly API_URL = "/criteria";
+  private readonly API_URL = "/api/evaluation/criteria";
 
   async getCriteria(): Promise<Criterion[]> {
     try {
-      const response = await api.get<Criterion[]>(this.API_URL);
-      return response.data;
+      const response = await api.get<ApiResponse<Criterion[]>>(this.API_URL);
+      return response.data.data;
     } catch (error) {
       console.error("Error fetching criteria:", error);
       return [];
@@ -21,8 +26,10 @@ class CriterionService {
 
   async getCriterionById(id: string): Promise<Criterion | null> {
     try {
-      const response = await api.get<Criterion>(`${this.API_URL}/${id}`);
-      return response.data;
+      const response = await api.get<ApiResponse<Criterion>>(
+        `${this.API_URL}/${id}`
+      );
+      return response.data.data;
     } catch (error) {
       console.error("Criterion not found:", error);
       return null;
@@ -33,8 +40,11 @@ class CriterionService {
     criterion: Omit<Criterion, "id">
   ): Promise<Criterion | null> {
     try {
-      const response = await api.post<Criterion>(this.API_URL, criterion);
-      return response.data;
+      const response = await api.post<ApiResponse<Criterion>>(
+        this.API_URL,
+        criterion
+      );
+      return response.data.data;
     } catch (error) {
       console.error("Error creating criterion:", error);
       return null;
@@ -46,12 +56,12 @@ class CriterionService {
     criterion: Partial<Criterion>
   ): Promise<Criterion | null> {
     try {
-      const response = await api.put<Criterion>(
+      const response = await api.put<ApiResponse<Criterion>>(
         `${this.API_URL}/${id}`,
         criterion
       );
 
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error("Error updating criterion:", error);
       return null;

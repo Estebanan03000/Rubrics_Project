@@ -12,6 +12,11 @@ class RubricBusiness {
     }, 0);
   }
 
+  private hasDuplicatedScaleValues(criterion: RubricCriterionInput): boolean {
+    const values = criterion.scales.map((scale) => Number(scale.value));
+    return new Set(values).size !== values.length;
+  }
+
   private validateBasicData(data: RubricFormData): void {
     if (!data.title.trim()) {
       throw new Error("El título de la rúbrica es obligatorio.");
@@ -45,6 +50,16 @@ class RubricBusiness {
     if (hasInvalidCriterion) {
       throw new Error(
         "Todos los criterios deben tener nombre, descripción, peso mayor a cero y entre 2 y 5 escalas válidas."
+      );
+    }
+
+    const criterionWithDuplicatedScale = criteria.find((criterion) =>
+      this.hasDuplicatedScaleValues(criterion)
+    );
+
+    if (criterionWithDuplicatedScale) {
+      throw new Error(
+        `El criterio "${criterionWithDuplicatedScale.name}" tiene valores de escala repetidos. Cada valor debe ser único dentro del mismo criterio.`
       );
     }
 
@@ -91,24 +106,30 @@ class RubricBusiness {
           weight: Number(criterion.weight),
         });
 
-        if (!createdCriterion) {
+        if (!createdCriterion?.id) {
           throw new Error(
             "La rúbrica fue creada, pero ocurrió un error creando sus criterios."
           );
         }
 
         for (const scale of criterion.scales) {
-          const createdScale = await scaleService.createScale({
-            criterion_id: createdCriterion.id,
-            name: scale.name.trim(),
-            description: scale.description.trim(),
-            value: Number(scale.value),
-          });
+          if (
+            scale.name.trim() &&
+            scale.description.trim() &&
+            Number(scale.value) > 0
+          ) {
+            const createdScale = await scaleService.createScale({
+              criterion_id: createdCriterion.id,
+              name: scale.name.trim(),
+              description: scale.description.trim(),
+              value: Number(scale.value),
+            });
 
-          if (!createdScale) {
-            throw new Error(
-              "La rúbrica fue creada, pero ocurrió un error creando las escalas."
-            );
+            if (!createdScale) {
+              throw new Error(
+                "La rúbrica fue creada, pero ocurrió un error creando las escalas."
+              );
+            }
           }
         }
       }

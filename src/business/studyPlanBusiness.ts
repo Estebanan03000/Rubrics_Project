@@ -17,11 +17,14 @@ class StudyPlanBusiness {
       throw new Error("Debe ingresar un año válido para el plan de estudios.");
     }
 
+    if (!studyPlan.suggested_semester || studyPlan.suggested_semester <= 0) {
+      throw new Error("Debe ingresar un semestre sugerido válido.");
+    }
+
     return await studyPlanService.createStudyPlan({
       ...studyPlan,
       name: studyPlan.name.trim(),
       is_published: studyPlan.is_published ?? false,
-      is_active: studyPlan.is_active ?? true,
     });
   }
 
@@ -58,25 +61,6 @@ class StudyPlanBusiness {
 
     if (!payload.subject_id) {
       throw new Error("Debe seleccionar una asignatura.");
-    }
-
-    if (
-      payload.suggested_semester !== undefined &&
-      payload.suggested_semester <= 0
-    ) {
-      throw new Error("El semestre sugerido debe ser mayor que cero.");
-    }
-
-    const linkedSubjects = await studyPlanService.listStudyPlanSubjects(
-      studyPlanId
-    );
-
-    const alreadyLinked = linkedSubjects.some(
-      (item) => item.subject_id === payload.subject_id
-    );
-
-    if (alreadyLinked) {
-      throw new Error("La asignatura ya está vinculada a este plan de estudios.");
     }
 
     return await studyPlanService.linkSubjectToStudyPlan(studyPlanId, payload);

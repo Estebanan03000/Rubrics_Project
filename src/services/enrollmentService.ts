@@ -5,7 +5,7 @@ import {
 } from '../models/Enrollment';
 
 class EnrollmentService {
-  private readonly API_URL = '/academic/enrollments';
+  private readonly API_URL = '/api/academic/enrollments';
 
   private getResponseData(response: any) {
     return response.data.data || response.data;

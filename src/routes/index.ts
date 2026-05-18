@@ -72,6 +72,8 @@ const EnrollmentsList = lazy(() => import('../pages/Enrollments/List'));
 const EnrollmentsCreate = lazy(() => import('../pages/Enrollments/Create'));
 
 // Evaluations
+const EvaluationRubricDetail = lazy(() => import('../pages/Evaluations/RubricDetail'));
+const AssociateRubric = lazy(() => import('../pages/Evaluations/AssociateRubric'));
 const EvaluationsList = lazy(() => import('../pages/Evaluations/List'));
 const EvaluationsCreate = lazy(() => import('../pages/Evaluations/Create'));
 const EvaluationsUpdate = lazy(() => import('../pages/Evaluations/Update'));
@@ -240,6 +242,16 @@ const coreRoutes = [
   },
 
   // Evaluations
+  {
+    path: '/evaluations/associate-rubric',
+    title: 'Asociar rúbrica',
+    component: AssociateRubric,
+  },
+  {
+    path: '/evaluations/:id/rubric',
+    title: 'Rúbrica de evaluación',
+    component: EvaluationRubricDetail,
+  },
   { path: '/evaluations/list',       title: 'Evaluations List',   component: EvaluationsList },
   { path: '/evaluations/create',     title: 'Create Evaluation',  component: EvaluationsCreate },
   { path: '/evaluations/update/:id', title: 'Edit Evaluation',    component: EvaluationsUpdate },

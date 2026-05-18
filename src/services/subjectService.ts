@@ -2,7 +2,7 @@ import { api } from '../interceptors/authInterceptor';
 import { Subject } from '../models/Subject';
 
 class SubjectService {
-  private readonly API_URL = '/subjects';
+  private readonly API_URL = '/api/academic/subjects';
 
   private getResponseData(response: any) {
     return response.data.data || response.data;

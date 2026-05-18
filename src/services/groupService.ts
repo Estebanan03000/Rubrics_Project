@@ -2,7 +2,7 @@ import { api } from '../interceptors/authInterceptor';
 import { Group } from '../models/Group';
 
 class GroupService {
-  private readonly API_URL = '/academic/groups';
+  private readonly API_URL = '/api/academic/groups';
 
   private getResponseData(response: any) {
     return response.data.data || response.data;

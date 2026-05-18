@@ -1,17 +1,60 @@
 /* Archivo: services/evaluationService.ts   Proposito: Servicio para consumir la API desde evaluationService.*/
 import { api } from '../interceptors/authInterceptor';
 import { Evaluation } from '../models/Evaluation';
+import { Rubric } from '../models/Rubric';
 class EvaluationService {
-  private readonly API_URL = '/evaluations';
+  private readonly API_URL = '/api/academic/evaluations';
+
+  private getResponseData(response: any) {
+    return response.data.data || response.data;
+  }
+
+  async getEvaluationRubric(
+    evaluationId: string,
+  ): Promise<Rubric | null> {
+    try {
+      const response = await api.get(
+        `${this.API_URL}/${evaluationId}/rubric`,
+      );
+
+      return this.getResponseData(response);
+    } catch (error) {
+      console.error('Error fetching evaluation rubric:', error);
+      throw error;
+    }
+  }
+
+  async associateRubric(
+    evaluationId: string,
+    rubricId: string,
+    subjectId: string,
+  ): Promise<Evaluation | null> {
+    try {
+      const response = await api.patch(
+        `${this.API_URL}/${evaluationId}/associate-rubric`,
+        {
+          rubric_id: rubricId,
+          subject_id: subjectId,
+        },
+      );
+
+      return this.getResponseData(response);
+    } catch (error) {
+      console.error('Error associating rubric:', error);
+      throw error;
+    }
+  }
+
   async getEvaluations(): Promise<Evaluation[]> {
     try {
-      const response = await api.get<Evaluation[]>(this.API_URL);
-      return response.data;
+      const response = await api.get(this.API_URL);
+      return this.getResponseData(response);
     } catch (error) {
       console.error('Error fetching evaluations:', error);
       return [];
     }
   }
+
   async getEvaluationById(id: string): Promise<Evaluation | null> {
     try {
       const response = await api.get<Evaluation>(`${this.API_URL}/${id}`);
@@ -21,6 +64,7 @@ class EvaluationService {
       return null;
     }
   }
+  
   async createEvaluation(
     evaluation: Omit<Evaluation, 'id'>,
   ): Promise<Evaluation | null> {
@@ -32,6 +76,7 @@ class EvaluationService {
       return null;
     }
   }
+
   async updateEvaluation(
     id: string,
     evaluation: Partial<Evaluation>,
@@ -47,6 +92,7 @@ class EvaluationService {
       return null;
     }
   }
+
   async deleteEvaluation(id: string): Promise<boolean> {
     try {
       await api.delete(`${this.API_URL}/${id}`);

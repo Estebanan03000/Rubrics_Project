@@ -2,7 +2,7 @@ import { api } from '../interceptors/authInterceptor';
 import { Student } from '../models/Student';
 
 class StudentService {
-  private readonly API_URL = '/academic/students';
+  private readonly API_URL = '/api/academic/students';
 
   private getResponseData(response: any) {
     return response.data.data || response.data;

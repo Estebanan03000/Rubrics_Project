@@ -10,4 +10,6 @@ export interface Evaluation {
   description?: string;
   weight: number;
   due_date?: string;
+  created_at?: string;
+  updated_at?: string;
 }

@@ -2,7 +2,24 @@
 import { api } from '../interceptors/authInterceptor';
 import { Rubric } from '../models/Rubric';
 class RubricService {
-  private readonly API_URL = '/rubrics';
+  private readonly API_URL = '/api/academic/rubrics';
+
+  private getResponseData(response: any) {
+    return response.data.data || response.data;
+  }
+
+  async getPublicRubrics(): Promise<Rubric[]> {
+    try {
+      const response = await api.get(this.API_URL);
+      const data = this.getResponseData(response);
+
+      return data.filter((rubric: Rubric) => rubric.is_public === true);
+    } catch (error) {
+      console.error('Error fetching rubrics:', error);
+      return [];
+    }
+  }
+
   async getRubrics(): Promise<Rubric[]> {
     try {
       const response = await api.get<Rubric[]>(this.API_URL);
@@ -12,6 +29,7 @@ class RubricService {
       return [];
     }
   }
+
   async getRubricById(id: string): Promise<Rubric | null> {
     try {
       const response = await api.get<Rubric>(`${this.API_URL}/${id}`);
@@ -21,6 +39,7 @@ class RubricService {
       return null;
     }
   }
+
   async createRubric(rubric: Omit<Rubric, 'id'>): Promise<Rubric | null> {
     try {
       const response = await api.post<Rubric>(this.API_URL, rubric);
@@ -30,6 +49,7 @@ class RubricService {
       return null;
     }
   }
+
   async updateRubric(
     id: string,
     rubric: Partial<Rubric>,
@@ -42,6 +62,7 @@ class RubricService {
       return null;
     }
   }
+
   async deleteRubric(id: string): Promise<boolean> {
     try {
       await api.delete(`${this.API_URL}/${id}`);

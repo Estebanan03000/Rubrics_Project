@@ -2,7 +2,18 @@ import { api } from '../interceptors/authInterceptor';
 import { User } from '../models/User';
 
 class UserService {
-    private readonly API_URL = '/users';
+    private readonly API_URL = '/api/users';
+
+    private mapUserPayload(user: Partial<User>) {
+    return {
+        ...user,
+        first_name: user.profile?.first_name,
+        last_name: user.profile?.last_name,
+        identification: user.profile?.identification,
+        phone: user.profile?.phone,
+        specialty: user.profile?.specialty,
+    };
+}
 
     async getUsers(): Promise<User[]> {
         try {
@@ -28,7 +39,10 @@ class UserService {
 
     async createUser(user: User): Promise<User | null> {
         try {
-        const response = await api.post(this.API_URL, user);
+        const response = await api.post(
+            this.API_URL,
+            this.mapUserPayload(user),
+        );
 
         return response.data.data || response.data;
         } catch (error) {
@@ -43,7 +57,7 @@ class UserService {
         try {
         const response = await api.put(
             `${this.API_URL}/${id}`,
-            user,
+            this.mapUserPayload(user),
         );
 
         return response.data.data || response.data;

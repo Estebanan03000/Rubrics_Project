@@ -17,10 +17,9 @@ const CreateStudyPlan: React.FC = () => {
     career_id: "",
     name: "",
     year: new Date().getFullYear(),
+    suggested_semester: 1,
     is_published: false,
-    is_active: true,
   });
-
   useEffect(() => {
     loadCareers();
   }, []);
@@ -40,7 +39,7 @@ const CreateStudyPlan: React.FC = () => {
       [name]:
         type === "checkbox"
           ? (event.target as HTMLInputElement).checked
-          : name === "year"
+          : name === "year" || name === "suggested_semester"
           ? Number(value)
           : value,
     }));
@@ -60,6 +59,12 @@ const CreateStudyPlan: React.FC = () => {
         );
 
         navigate(`/studyplans/update/${createdStudyPlan.id}`);
+      } else {
+        await Swal.fire(
+          "Error",
+          "No se pudo crear el plan de estudios.",
+          "error"
+        );
       }
     } catch (error) {
       await Swal.fire(
@@ -92,6 +97,7 @@ const CreateStudyPlan: React.FC = () => {
             className="w-full rounded border border-stroke px-4 py-2 dark:border-strokedark dark:bg-form-input"
           >
             <option value="">Seleccione una carrera</option>
+
             {careers.map((career) => (
               <option key={career.id} value={career.id}>
                 {career.name} ({career.code})
@@ -128,18 +134,26 @@ const CreateStudyPlan: React.FC = () => {
           />
         </div>
 
-        <label className="mb-6 flex items-center gap-2">
+        <div className="mb-4">
+          <label className="mb-2 block font-medium text-black dark:text-white">
+            Semestre sugerido
+          </label>
+
           <input
-            type="checkbox"
-            name="is_published"
-            checked={formData.is_published}
+            type="number"
+            name="suggested_semester"
+            value={formData.suggested_semester}
             onChange={handleChange}
+            className="w-full rounded border border-stroke px-4 py-2 dark:border-strokedark dark:bg-form-input"
           />
-          Publicar plan
-        </label>
+        </div>
+
 
         <div className="flex gap-3">
-          <button type="submit" className="rounded bg-primary px-4 py-2 text-white">
+          <button
+            type="submit"
+            className="rounded bg-primary px-4 py-2 text-white"
+          >
             Crear
           </button>
 

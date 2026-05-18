@@ -1,13 +1,18 @@
-/* Archivo: services/careerService.ts   Proposito: Servicio para consumir la API desde careerService.*/
 import { api } from '../interceptors/authInterceptor';
 import { Career } from '../models/Career';
+
+type ApiResponse<T> = {
+  data: T;
+  message?: string;
+};
+
 class CareerService {
-  private readonly API_URL = '/careers';
-  
+  private readonly API_URL = '/academic/careers';
+
   async getCareers(): Promise<Career[]> {
     try {
-      const response = await api.get<Career[]>(this.API_URL);
-      return response.data;
+      const response = await api.get<ApiResponse<Career[]>>(this.API_URL);
+      return response.data.data;
     } catch (error) {
       console.error('Error fetching careers:', error);
       return [];
@@ -16,8 +21,8 @@ class CareerService {
 
   async getCareerById(id: string): Promise<Career | null> {
     try {
-      const response = await api.get<Career>(`${this.API_URL}/${id}`);
-      return response.data;
+      const response = await api.get<ApiResponse<Career>>(`${this.API_URL}/${id}`);
+      return response.data.data;
     } catch (error) {
       console.error('Career not found:', error);
       return null;
@@ -26,8 +31,8 @@ class CareerService {
 
   async createCareer(career: Omit<Career, 'id'>): Promise<Career | null> {
     try {
-      const response = await api.post<Career>(this.API_URL, career);
-      return response.data;
+      const response = await api.post<ApiResponse<Career>>(this.API_URL, career);
+      return response.data.data;
     } catch (error) {
       console.error('Error creating career:', error);
       return null;
@@ -39,8 +44,11 @@ class CareerService {
     career: Partial<Career>,
   ): Promise<Career | null> {
     try {
-      const response = await api.put<Career>(`${this.API_URL}/${id}`, career);
-      return response.data;
+      const response = await api.put<ApiResponse<Career>>(
+        `${this.API_URL}/${id}`,
+        career,
+      );
+      return response.data.data;
     } catch (error) {
       console.error('Error updating career:', error);
       return null;

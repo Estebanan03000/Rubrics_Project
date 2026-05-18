@@ -2,10 +2,10 @@
    Proposito: Implementa la logica principal del archivo StudyPlan.
 */
 export interface StudyPlan {
-    id?: string;
-    career_id: string;
-    name: string;
-    year: number;
-    is_published: boolean;
-    is_active?: boolean;
+  id?: string;
+  career_id: string;
+  name: string;
+  year: number;
+  suggested_semester: number;
+  is_published: boolean;
 }

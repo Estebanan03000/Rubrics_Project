@@ -45,8 +45,12 @@ const UpdateStudyPlan: React.FC = () => {
     setLinkedSubjects(linkedResponse);
   };
 
+  const getLinkedSubjectId = (item: any): string => {
+    return item.subject_id ?? item.subject?.id ?? item.id ?? "";
+  };
+
   const availableSubjects = useMemo(() => {
-    const linkedIds = linkedSubjects.map((item) => item.subject_id);
+    const linkedIds = linkedSubjects.map((item) => getLinkedSubjectId(item));
 
     return subjects.filter((subject) => {
       const text = `${subject.name ?? ""} ${subject.code ?? ""}`.toLowerCase();
@@ -58,20 +62,19 @@ const UpdateStudyPlan: React.FC = () => {
     });
   }, [subjects, linkedSubjects, subjectSearch]);
 
-  const getSubjectName = (subjectId: string) => {
+  const getSubjectName = (item: any) => {
+    if (item.subject) {
+      return `${item.subject.name} (${item.subject.code})`;
+    }
+
+    const subjectId = getLinkedSubjectId(item);
     const directSubject = subjects.find((subject) => subject.id === subjectId);
 
     if (directSubject) {
       return `${directSubject.name} (${directSubject.code})`;
     }
 
-    const linked = linkedSubjects.find((item) => item.subject_id === subjectId);
-
-    if (linked?.subject) {
-      return `${linked.subject.name} (${linked.subject.code})`;
-    }
-
-    return subjectId;
+    return "Asignatura no identificada";
   };
 
   const handleChange = (
@@ -95,6 +98,19 @@ const UpdateStudyPlan: React.FC = () => {
 
     if (!id) return;
 
+    if (formData.is_published && linkedSubjects.length === 0) {
+      setFormData((prev) => ({
+        ...prev,
+        is_published: false,
+      }));      
+      
+      await Swal.fire(
+        "No se puede publicar",
+        "Debe vincular al menos una asignatura antes de publicar el plan de estudios.",
+        "warning"
+      );
+      return;
+    }
     try {
       const updated = await studyPlanBusiness.updateStudyPlan(id, formData);
 
@@ -120,6 +136,28 @@ const UpdateStudyPlan: React.FC = () => {
 
   const handleLinkSubject = async () => {
     if (!id) return;
+
+    if (!selectedSubjectId) {
+      await Swal.fire(
+        "Campo requerido",
+        "Debe seleccionar una asignatura para vincular.",
+        "warning"
+      );
+      return;
+    }
+
+    const alreadyLinked = linkedSubjects.some(
+      (item) => getLinkedSubjectId(item) === selectedSubjectId
+    );
+
+    if (alreadyLinked) {
+      await Swal.fire(
+        "Asignatura duplicada",
+        "Esta asignatura ya está vinculada al plan de estudios.",
+        "warning"
+      );
+      return;
+    }
 
     try {
       const linked = await studyPlanBusiness.linkSubject(id, {
@@ -189,23 +227,27 @@ const UpdateStudyPlan: React.FC = () => {
   const linkedColumns: TableColumn<StudyPlanSubject>[] = [
     {
       header: "Asignatura",
-      render: (item) => getSubjectName(item.subject_id),
+      render: (item) => getSubjectName(item),
     },
     {
       header: "Semestre sugerido",
-      render: (item) => item.suggested_semester ?? "-",
+      render: (item: any) => item.suggested_semester ?? "-",
     },
     {
       header: "Acciones",
-      render: (item) => (
-        <button
-          type="button"
-          onClick={() => handleUnlinkSubject(item.subject_id)}
-          className="rounded border border-red-500 px-3 py-1 text-sm text-red-500"
-        >
-          Remover
-        </button>
-      ),
+      render: (item) => {
+        const subjectId = getLinkedSubjectId(item);
+
+        return (
+          <button
+            type="button"
+            onClick={() => handleUnlinkSubject(subjectId)}
+            className="rounded border border-red-500 px-3 py-1 text-sm text-red-500"
+          >
+            Remover
+          </button>
+        );
+      },
     },
   ];
 
@@ -268,7 +310,10 @@ const UpdateStudyPlan: React.FC = () => {
           </label>
 
           <div className="flex gap-3">
-            <button type="submit" className="rounded bg-primary px-4 py-2 text-white">
+            <button
+              type="submit"
+              className="rounded bg-primary px-4 py-2 text-white"
+            >
               Actualizar
             </button>
 
@@ -307,17 +352,22 @@ const UpdateStudyPlan: React.FC = () => {
               </option>
             ))}
           </select>
+          <div className="mb-4">
+            <label className="mb-2 block font-medium text-black dark:text-white">
+              Semestre sugerido
+            </label>
 
-          <input
-            type="number"
-            min={1}
-            value={suggestedSemester}
-            onChange={(event) =>
-              setSuggestedSemester(Number(event.target.value))
-            }
-            className="mb-4 w-full rounded border border-stroke px-4 py-2 dark:border-strokedark dark:bg-form-input"
-            placeholder="Semestre sugerido"
-          />
+            <input
+              type="number"
+              min={1}
+              value={suggestedSemester}
+              onChange={(event) =>
+                setSuggestedSemester(Number(event.target.value))
+              }
+              className="w-full rounded border border-stroke px-4 py-2 dark:border-strokedark dark:bg-form-input"
+              placeholder="Semestre sugerido"
+            />
+          </div>
 
           <button
             type="button"

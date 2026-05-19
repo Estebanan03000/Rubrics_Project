@@ -19,8 +19,62 @@ class GroupService {
   }
 
   async getGroupById(id: string): Promise<Group | null> {
-    const groups = await this.getGroups();
-    return groups.find((group) => group.id === id) ?? null;
+    try {
+      const response = await api.get(`${this.API_URL}/${id}`);
+      return this.getResponseData(response);
+    } catch (error) {
+      console.error('Group not found:', error);
+      return null;
+    }
+  }
+
+  async createGroup(group: Group): Promise<Group | null> {
+    try {
+      const response = await api.post(this.API_URL, group);
+      return this.getResponseData(response);
+    } catch (error) {
+      console.error('Error creating group:', error);
+      return null;
+    }
+  }
+
+  async updateGroup(
+    id: string,
+    group: Partial<Group>,
+  ): Promise<Group | null> {
+    try {
+      const response = await api.put(`${this.API_URL}/${id}`, group);
+      return this.getResponseData(response);
+    } catch (error) {
+      console.error('Error updating group:', error);
+      return null;
+    }
+  }
+
+  async assignTeacherToGroup(
+    groupId: string,
+    teacherId: string,
+  ): Promise<Group | null> {
+    try {
+      const response = await api.patch(
+        `${this.API_URL}/${groupId}/assign-teacher/${teacherId}`,
+      );
+
+      return this.getResponseData(response);
+    } catch (error) {
+      console.error('Error assigning teacher to group:', error);
+      return null;
+    }
+  }
+
+  async deleteGroup(id: string): Promise<boolean> {
+    try {
+      await api.delete(`${this.API_URL}/${id}`);
+      return true;
+    } catch (error) {
+      console.error('Error deleting group:', error);
+      return false;
+    }
   }
 }
 

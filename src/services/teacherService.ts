@@ -2,7 +2,7 @@
 import { api } from '../interceptors/authInterceptor';
 import { Teacher } from '../models/Teacher';
 class TeacherService {
-  private readonly API_URL = '/teachers';
+  private readonly API_URL = '/api/academic/teachers';
 
   async getTeachers(): Promise<Teacher[]> {
     try {

@@ -60,7 +60,7 @@ class GradingBusiness {
     const activeEnrollments = enrollments.filter(
       (enrollment) =>
         enrollment.group_id === evaluation.group_id &&
-        enrollment.status === "active"
+        enrollment.status === "ACTIVE"
     );
 
     return activeEnrollments.map((enrollment) => {

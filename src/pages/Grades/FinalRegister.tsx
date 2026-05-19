@@ -2,8 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import AcademicHeader from '../../components/academic/AcademicHeader';
-import { FinalGradeConsolidated, FinalGradeStudentRow } from '../../models/FinalGrade';
+import {
+  FinalGradeConsolidated,
+  FinalGradeStudentRow,
+} from '../../models/FinalGrade';
 import { finalGradeBusiness } from '../../business/finalGradeBusiness';
+import { downloadFinalGradePdfReport } from '../../utils/finalGradePdfReport';
 
 const FinalRegister: React.FC = () => {
   const navigate = useNavigate();
@@ -69,12 +73,12 @@ const FinalRegister: React.FC = () => {
 
   const handleConfirmOfficialRegister = async () => {
     if (!groupId) return;
-    
+
     if (!data?.groupInfo.semesterIsActive) {
-        alert(
+      alert(
         'No se puede confirmar el registro oficial porque el semestre está inactivo.',
-        );
-        return;
+      );
+      return;
     }
 
     const confirmRegister = window.confirm(
@@ -96,8 +100,10 @@ const FinalRegister: React.FC = () => {
     }
   };
 
-  const handlePrintReport = () => {
-    window.print();
+  const handleDownloadPdfReport = () => {
+    if (!data) return;
+
+    downloadFinalGradePdfReport(data);
   };
 
   if (loading) {
@@ -255,7 +261,9 @@ const FinalRegister: React.FC = () => {
 
             <p className="flex justify-between">
               <span>Total de estudiantes:</span>
-              <span className="font-semibold">{data.summary.totalStudents}</span>
+              <span className="font-semibold">
+                {data.summary.totalStudents}
+              </span>
             </p>
 
             <div className="my-4 border-t border-stroke dark:border-strokedark" />
@@ -352,7 +360,8 @@ const FinalRegister: React.FC = () => {
                     colSpan={data.evaluations.length + 6}
                     className="px-4 py-8 text-center text-sm"
                   >
-                    No hay estudiantes inscritos o notas relacionadas para este grupo.
+                    No hay estudiantes inscritos o notas relacionadas para este
+                    grupo.
                   </td>
                 </tr>
               )}
@@ -375,7 +384,8 @@ const FinalRegister: React.FC = () => {
                           {student.studentName}
                         </p>
                         <p className="text-sm">
-                          {student.studentIdentification || 'Sin identificación'}
+                          {student.studentIdentification ||
+                            'Sin identificación'}
                         </p>
                       </div>
                     </div>
@@ -505,33 +515,35 @@ const FinalRegister: React.FC = () => {
 
         <button
           type="button"
-          onClick={handlePrintReport}
-          className="rounded border border-primary px-5 py-3 text-sm font-medium text-primary hover:bg-primary hover:text-white"
+          onClick={handleDownloadPdfReport}
+          disabled={data.students.length === 0}
+          className="rounded border border-primary px-5 py-3 text-sm font-medium text-primary hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
         >
-          Vista previa / imprimir reporte
+          Descargar reporte PDF
         </button>
 
         <button
-        type="button"
-        onClick={handleConfirmOfficialRegister}
-        disabled={
+          type="button"
+          onClick={handleConfirmOfficialRegister}
+          disabled={
             confirming ||
             data.students.length === 0 ||
             !data.groupInfo.semesterIsActive
-        }
-        className="rounded bg-primary px-5 py-3 text-sm font-medium text-white hover:bg-opacity-90 disabled:cursor-not-allowed disabled:bg-opacity-50"
+          }
+          className="rounded bg-primary px-5 py-3 text-sm font-medium text-white hover:bg-opacity-90 disabled:cursor-not-allowed disabled:bg-opacity-50"
         >
-        {confirming ? 'Confirmando...' : 'Confirmar registro oficial'}
+          {confirming ? 'Confirmando...' : 'Confirmar registro oficial'}
         </button>
       </div>
 
-        {!data.groupInfo.semesterIsActive && (
+      {!data.groupInfo.semesterIsActive && (
         <div className="mt-6 rounded-sm border border-danger bg-danger bg-opacity-10 p-4 text-sm text-danger">
-            <strong>Semestre inactivo:</strong> No se permite registrar oficialmente
-            la nota final porque el semestre asociado al grupo está inactivo. Contacte
-            al administrador para activar el semestre o revisar la configuración.
+          <strong>Semestre inactivo:</strong> No se permite registrar
+          oficialmente la nota final porque el semestre asociado al grupo está
+          inactivo. Contacte al administrador para activar el semestre o revisar
+          la configuración.
         </div>
-        )}
+      )}
 
       {data.summary.partialStudents > 0 && (
         <div className="mt-6 rounded-sm border border-danger bg-danger bg-opacity-10 p-4 text-sm text-danger">

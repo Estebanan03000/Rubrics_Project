@@ -13,7 +13,7 @@ const Tables = lazy(() => import('../pages/Tables'));
 const Alerts = lazy(() => import('../pages/UiElements/Alerts'));
 const Buttons = lazy(() => import('../pages/UiElements/Buttons'));
 const Demo= lazy(() => import('../pages/Demo'));
-const Posts= lazy(() => import('../pages/Posts/List'));
+//const Posts= lazy(() => import('../pages/Posts/List'));
 
 // Users
 const Users = lazy(() => import('../pages/Users'));
@@ -110,11 +110,11 @@ const coreRoutes = [
     title: 'Role List',
     component: lazy(() => import('../pages/Roles/List')),
   },
-  {
-    path: '/posts/list',
-    title: 'Posts',
-    component: Posts,
-  },
+  //{
+  //  path: '/posts/list',
+  //  title: 'Posts',
+  //  component: Posts,
+  //},
   {
     path: '/calendar',
     title: 'Calender',

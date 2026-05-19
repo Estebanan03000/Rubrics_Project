@@ -62,6 +62,7 @@ const GradesCreate = lazy(() => import('../pages/Grades/Create'));
 const GradesUpdate = lazy(() => import('../pages/Grades/Update'));
 const EvaluationStudents = lazy(() => import('../pages/Grades/EvaluationStudents'));
 const GradeStudent = lazy(() => import('../pages/Grades/GradeStudent'));
+const FinalRegister = lazy(() => import('../pages/Grades/FinalRegister'));
 
 // My Grades
 const MyGradesList = lazy(() => import('../pages/MyGrades/List'));
@@ -229,6 +230,11 @@ const coreRoutes = [
   { path: '/grades/create',     title: 'Create Grade',  component: GradesCreate },
   { path: '/grades/update/:id', title: 'Edit Grade',    component: GradesUpdate },
   { path: '/grades/evaluation/:evaluationId', title: 'Evaluation Students', component: EvaluationStudents },
+  {
+    path: '/grades/final/:groupId',
+    title: 'Registrar nota final',
+    component: FinalRegister,
+  },  
   { path: '/grades/evaluation/:evaluationId/student/:enrollmentId', title: 'Grade Student', component: GradeStudent },
   { path: '/my-grades/list',    title: 'My Grades',     component: MyGradesList },
   { path: '/my-grades/detail/:gradeId', title: 'My Grade Detail', component: MyGradeDetail },

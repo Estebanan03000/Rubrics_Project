@@ -17,6 +17,11 @@ class GroupService {
       return [];
     }
   }
+
+  async getGroupById(id: string): Promise<Group | null> {
+    const groups = await this.getGroups();
+    return groups.find((group) => group.id === id) ?? null;
+  }
 }
 
 export const groupService = new GroupService();

@@ -2,8 +2,9 @@
 import { api } from '../interceptors/authInterceptor';
 import { Evaluation } from '../models/Evaluation';
 import { Rubric } from '../models/Rubric';
+
 class EvaluationService {
-  private readonly API_URL = '/api/academic/evaluations';
+  private readonly API_URL = '/api/evaluation/evaluations';
 
   private getResponseData(response: any) {
     return response.data.data || response.data;
@@ -31,9 +32,8 @@ class EvaluationService {
   ): Promise<Evaluation | null> {
     try {
       const response = await api.patch(
-        `${this.API_URL}/${evaluationId}/associate-rubric`,
+        `${this.API_URL}/${evaluationId}/associate-rubric/${rubricId}`,
         {
-          rubric_id: rubricId,
           subject_id: subjectId,
         },
       );
@@ -55,10 +55,18 @@ class EvaluationService {
     }
   }
 
+  async getEvaluationsByGroup(groupId: string): Promise<Evaluation[]> {
+    const evaluations = await this.getEvaluations();
+
+    return evaluations.filter(
+      (evaluation) => evaluation.group_id === groupId,
+    );
+  }
+
   async getEvaluationById(id: string): Promise<Evaluation | null> {
     try {
-      const response = await api.get<Evaluation>(`${this.API_URL}/${id}`);
-      return response.data;
+      const response = await api.get(`${this.API_URL}/${id}`);
+      return this.getResponseData(response);
     } catch (error) {
       console.error('Evaluation not found:', error);
       return null;
@@ -69,8 +77,8 @@ class EvaluationService {
     evaluation: Omit<Evaluation, 'id'>,
   ): Promise<Evaluation | null> {
     try {
-      const response = await api.post<Evaluation>(this.API_URL, evaluation);
-      return response.data;
+      const response = await api.post(this.API_URL, evaluation);
+      return this.getResponseData(response);
     } catch (error) {
       console.error('Error creating evaluation:', error);
       return null;
@@ -82,11 +90,11 @@ class EvaluationService {
     evaluation: Partial<Evaluation>,
   ): Promise<Evaluation | null> {
     try {
-      const response = await api.put<Evaluation>(
+      const response = await api.put(
         `${this.API_URL}/${id}`,
         evaluation,
       );
-      return response.data;
+      return this.getResponseData(response);
     } catch (error) {
       console.error('Error updating evaluation:', error);
       return null;
@@ -103,4 +111,5 @@ class EvaluationService {
     }
   }
 }
+
 export const evaluationService = new EvaluationService();

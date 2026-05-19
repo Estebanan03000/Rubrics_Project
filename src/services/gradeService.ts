@@ -2,12 +2,16 @@ import { api } from "../interceptors/authInterceptor";
 import { Grade } from "../models/Grade";
 
 class GradeService {
-  private readonly API_URL = "/grades";
+  private readonly API_URL = "/api/evaluation/grades";
+
+  private getResponseData(response: any) {
+    return response.data.data || response.data;
+  }
 
   async getGrades(): Promise<Grade[]> {
     try {
-      const response = await api.get<Grade[]>(this.API_URL);
-      return response.data;
+      const response = await api.get(this.API_URL);
+      return this.getResponseData(response);
     } catch (error) {
       console.error("Error fetching grades:", error);
       return [];
@@ -16,8 +20,8 @@ class GradeService {
 
   async getGradeById(id: string): Promise<Grade | null> {
     try {
-      const response = await api.get<Grade>(`${this.API_URL}/${id}`);
-      return response.data;
+      const response = await api.get(`${this.API_URL}/${id}`);
+      return this.getResponseData(response);
     } catch (error) {
       console.error("Grade not found:", error);
       return null;
@@ -47,7 +51,14 @@ class GradeService {
   async getGradesByStudent(studentId: string): Promise<Grade[]> {
     try {
       const grades = await this.getGrades();
-      return grades.filter((grade) => grade.student_id === studentId);
+
+      return grades.filter((grade) => {
+        if (grade.student_id === studentId) return true;
+
+        return grade.details?.some(
+          (detail) => detail.student_id === studentId,
+        );
+      });
     } catch (error) {
       console.error("Error fetching student grades:", error);
       return [];
@@ -56,8 +67,8 @@ class GradeService {
 
   async createGrade(grade: Omit<Grade, "id">): Promise<Grade | null> {
     try {
-      const response = await api.post<Grade>(this.API_URL, grade);
-      return response.data;
+      const response = await api.post(this.API_URL, grade);
+      return this.getResponseData(response);
     } catch (error) {
       console.error("Error creating grade:", error);
       return null;
@@ -69,8 +80,8 @@ class GradeService {
     grade: Partial<Grade>
   ): Promise<Grade | null> {
     try {
-      const response = await api.put<Grade>(`${this.API_URL}/${id}`, grade);
-      return response.data;
+      const response = await api.put(`${this.API_URL}/${id}`, grade);
+      return this.getResponseData(response);
     } catch (error) {
       console.error("Error updating grade:", error);
       return null;
@@ -97,6 +108,19 @@ class GradeService {
     } catch (error) {
       console.error("Error downloading grade report:", error);
       return null;
+    }
+  }
+
+  async registerFinalScoresByGroup(groupId: string): Promise<any[]> {
+    try {
+      const response = await api.post(
+        `/api/evaluation/groups/${groupId}/register-final-scores`,
+      );
+
+      return this.getResponseData(response);
+    } catch (error) {
+      console.error("Error registering final scores:", error);
+      throw error;
     }
   }
 }

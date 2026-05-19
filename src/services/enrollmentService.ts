@@ -21,6 +21,16 @@ class EnrollmentService {
     }
   }
 
+  async getEnrollmentsByGroup(groupId: string): Promise<Enrollment[]> {
+    const enrollments = await this.getEnrollments();
+
+    return enrollments.filter(
+      (enrollment) =>
+        enrollment.group_id === groupId &&
+        enrollment.status === 'ACTIVE',
+    );
+  }
+
   async createEnrollments(
     payload: EnrollmentRequest,
   ): Promise<Enrollment[]> {

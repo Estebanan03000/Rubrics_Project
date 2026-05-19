@@ -40,13 +40,23 @@ const GradesList: React.FC = () => {
     {
       header: "Acciones",
       render: (evaluation) => (
-        <button
-          type="button"
-          onClick={() => navigate(`/grades/evaluation/${evaluation.id}`)}
-          className="rounded bg-primary px-3 py-1 text-sm text-white"
-        >
-          Calificar estudiantes
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => navigate(`/grades/evaluation/${evaluation.id}`)}
+            className="rounded bg-primary px-3 py-1 text-sm text-white hover:bg-opacity-90"
+          >
+            Calificar estudiantes
+          </button>
+
+          <button
+            type="button"
+            onClick={() => navigate(`/grades/final/${evaluation.group_id}`)}
+            className="rounded border border-success px-3 py-1 text-sm font-medium text-success hover:bg-success hover:text-white"
+          >
+            Nota final
+          </button>
+        </div>
       ),
     },
   ];
@@ -55,7 +65,7 @@ const GradesList: React.FC = () => {
     <>
       <AcademicHeader
         title="Calificaciones"
-        description="Selecciona una evaluación con rúbrica asociada para calificar estudiantes."
+        description="Selecciona una evaluación con rúbrica asociada para calificar estudiantes o registrar la nota final del grupo."
       />
 
       <EntityTable

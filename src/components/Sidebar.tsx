@@ -178,12 +178,6 @@ const menuSections: MenuSection[] = [
         roles: ["TEACHER"],
       },
       {
-        label: "Estudiantes",
-        path: "/students/list",
-        icon: <HiOutlineUserGroup />,
-        roles: ["TEACHER"],
-      },
-      {
         label: "Evaluaciones",
         path: "/evaluations/list",
         icon: <HiOutlineClipboardDocumentCheck />,
@@ -211,12 +205,6 @@ const menuSections: MenuSection[] = [
         label: "Crear rúbrica",
         path: "/rubrics/create",
         icon: <HiOutlineBookOpen />,
-        roles: ["TEACHER"],
-      },
-      {
-        label: "Escalas",
-        path: "/scales/list",
-        icon: <HiOutlineArchiveBox />,
         roles: ["TEACHER"],
       },
     ],

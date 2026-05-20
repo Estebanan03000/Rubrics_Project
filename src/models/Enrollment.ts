@@ -5,7 +5,7 @@ export enum EnrollmentStatus {
 
 export interface Enrollment {
   id?: string;
-  student_id?: string;
+  student_id: string;
   group_id?: string;
   enrollment_date?: string;
   status?: EnrollmentStatus | string;

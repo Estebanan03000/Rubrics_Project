@@ -6,6 +6,7 @@ import SubjectForm from '../../components/subjects/SubjectForm';
 
 import { Subject } from '../../models/Subject';
 import { subjectService } from '../../services/subjectService';
+import { auditLogService } from '../../services/auditLogService';
 
 export default function CreateSubject() {
   const navigate = useNavigate();
@@ -31,6 +32,12 @@ export default function CreateSubject() {
 
     try {
       await subjectService.createSubject(data);
+      auditLogService.createLog({
+        action: 'CREATE',
+        entity_name: 'Subject',
+        entity_id: data.id,
+        detail: `Asignatura creada: ${data.name}`,
+      });
 
       Swal.fire(
         'Completado',

@@ -6,6 +6,7 @@ import GenericTable from '../../components/GenericTable';
 
 import { User } from '../../models/User';
 import { userService } from '../../services/userService';
+import { auditLogService } from '../../services/auditLogService';
 
 export default function Users() {
   const navigate = useNavigate();
@@ -43,6 +44,12 @@ export default function Users() {
     if (!confirmed) return;
 
     await userService.deactivateUser(id);
+    auditLogService.createLog({
+      action: 'DEACTIVATE',
+      entity_name: 'User',
+      entity_id: id,
+      detail: 'Usuario desactivado',
+    });
     await loadUsers();
   };
 

@@ -6,29 +6,25 @@ import AssociateRubricForm from '../../components/evaluations/AssociateRubricFor
 
 import { Evaluation } from '../../models/Evaluation';
 import { Rubric } from '../../models/Rubric';
-import { Subject } from '../../models/Subject';
 
 import { evaluationService } from '../../services/evaluationService';
 import { rubricService } from '../../services/rubricService';
-import { subjectService } from '../../services/subjectService';
+import { auditLogService } from '../../services/auditLogService';
 
 export default function AssociateRubric() {
   const [evaluations, setEvaluations] = useState<Evaluation[]>([]);
   const [rubrics, setRubrics] = useState<Rubric[]>([]);
-  const [subjects, setSubjects] = useState<Subject[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
-      const [evaluationsData, rubricsData, subjectsData] =
+      const [evaluationsData, rubricsData] =
         await Promise.all([
           evaluationService.getEvaluations(),
           rubricService.getPublicRubrics(),
-          subjectService.getSubjects(),
         ]);
 
       setEvaluations(evaluationsData);
       setRubrics(rubricsData);
-      setSubjects(subjectsData);
     };
 
     loadData();
@@ -37,12 +33,11 @@ export default function AssociateRubric() {
   const handleSubmit = async (
     evaluationId: string,
     rubricId: string,
-    subjectId: string,
   ) => {
-    if (!evaluationId || !rubricId || !subjectId) {
+    if (!evaluationId || !rubricId) {
       Swal.fire(
         'Campos obligatorios',
-        'Debes seleccionar evaluación, rúbrica y asignatura.',
+        'Debes seleccionar evaluación y rúbrica.',
         'warning',
       );
       return;
@@ -52,8 +47,13 @@ export default function AssociateRubric() {
       await evaluationService.associateRubric(
         evaluationId,
         rubricId,
-        subjectId,
       );
+      auditLogService.createLog({
+        action: 'ASSOCIATE_RUBRIC',
+        entity_name: 'Evaluation',
+        entity_id: evaluationId,
+        detail: `Rúbrica ${rubricId} asociada a evaluación ${evaluationId}`,
+      });
 
       Swal.fire(
         'Completado',
@@ -65,6 +65,7 @@ export default function AssociateRubric() {
         'Error',
         error?.response?.data?.message ||
           error?.response?.data?.detail ||
+          error?.message ||
           'No se pudo asociar la rúbrica.',
         'error',
       );
@@ -79,7 +80,6 @@ export default function AssociateRubric() {
         <AssociateRubricForm
           evaluations={evaluations}
           rubrics={rubrics}
-          subjects={subjects}
           onSubmit={handleSubmit}
         />
       </div>

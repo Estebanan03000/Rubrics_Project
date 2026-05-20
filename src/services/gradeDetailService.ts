@@ -2,7 +2,7 @@ import { api } from "../interceptors/authInterceptor";
 import { GradeDetail } from "../models/GradeDetail";
 
 class GradeDetailService {
-  private readonly API_URL = "/grade-details";
+  private readonly API_URL = "/api/evaluation/grade-details";
 
   async getGradeDetails(): Promise<GradeDetail[]> {
     try {

@@ -82,17 +82,10 @@ class SecurityService extends EventTarget {
   }
 
   logout(): void {
-    this.user = null;
-
     this.storage.removeItem(STORAGE_KEYS.TOKEN);
-
-    store.dispatch(setUser(null));
-
-    this.dispatchEvent(
-      new CustomEvent("userChange", {
-        detail: null,
-      })
-    );
+    this.storage.removeItem(STORAGE_KEYS.SOCIAL_TOKEN);
+    this.storage.removeItem(STORAGE_KEYS.SOCIAL_USER);
+    this.storage.removeItem(STORAGE_KEYS.AUTH_PROVIDER);
 
     window.location.href = "/auth/signin";
   }
@@ -106,5 +99,5 @@ class SecurityService extends EventTarget {
   }
 }
 
-export const userService = new SecurityService();
-export default userService;
+export const securityService = new SecurityService();
+export default securityService;

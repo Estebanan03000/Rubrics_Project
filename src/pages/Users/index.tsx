@@ -1,17 +1,41 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import Breadcrumb from '../../components/Breadcrumb';
 import GenericTable from '../../components/GenericTable';
 
 import { User } from '../../models/User';
 import { userService } from '../../services/userService';
-import { auditLogService } from '../../services/auditLogService';
 
 export default function Users() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [users, setUsers] = useState<User[]>([]);
+
+  const roleFilter = useMemo(() => {
+    if (location.pathname.includes('/users/students')) {
+      return 'STUDENT';
+    }
+
+    if (location.pathname.includes('/users/teachers')) {
+      return 'TEACHER';
+    }
+
+    return null;
+  }, [location.pathname]);
+
+  const pageTitle = useMemo(() => {
+    if (roleFilter === 'STUDENT') {
+      return 'Usuarios estudiantes';
+    }
+
+    if (roleFilter === 'TEACHER') {
+      return 'Usuarios docentes';
+    }
+
+    return 'Usuarios';
+  }, [roleFilter]);
 
   const loadUsers = async () => {
     const data = await userService.getUsers();
@@ -22,7 +46,17 @@ export default function Users() {
     loadUsers();
   }, []);
 
-  const tableData = users.map((user) => ({
+  const filteredUsers = useMemo(() => {
+    if (!roleFilter) {
+      return users;
+    }
+
+    return users.filter(
+      (user) => user.role?.toUpperCase() === roleFilter,
+    );
+  }, [users, roleFilter]);
+
+  const tableData = filteredUsers.map((user) => ({
     id: user.id,
     email: user.email || '',
     code: user.code || '',
@@ -44,12 +78,6 @@ export default function Users() {
     if (!confirmed) return;
 
     await userService.deactivateUser(id);
-    auditLogService.createLog({
-      action: 'DEACTIVATE',
-      entity_name: 'User',
-      entity_id: id,
-      detail: 'Usuario desactivado',
-    });
     await loadUsers();
   };
 
@@ -70,7 +98,7 @@ export default function Users() {
 
   return (
     <>
-      <Breadcrumb pageName="Usuarios" />
+      <Breadcrumb pageName={pageTitle} />
 
       <div className="mb-6 flex justify-end">
         <button
@@ -81,12 +109,20 @@ export default function Users() {
         </button>
       </div>
 
-      <GenericTable
-        data={tableData}
-        columns={columns}
-        actions={actions}
-        onAction={handleTableAction}
-      />
+      {filteredUsers.length === 0 ? (
+        <div className="rounded-sm border border-stroke bg-white p-6 text-center shadow-default dark:border-strokedark dark:bg-boxdark">
+          <p className="text-sm text-black dark:text-white">
+            No hay usuarios para mostrar.
+          </p>
+        </div>
+      ) : (
+        <GenericTable
+          data={tableData}
+          columns={columns}
+          actions={actions}
+          onAction={handleTableAction}
+        />
+      )}
     </>
   );
 }

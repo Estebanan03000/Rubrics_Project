@@ -15,6 +15,7 @@ import {
   HiOutlineUserGroup,
   HiOutlineUsers,
 } from "react-icons/hi2";
+import { HiOutlineClipboardList } from "react-icons/hi";
 import {
   AppRole,
   getCurrentUserRole,
@@ -49,7 +50,7 @@ const menuSections: MenuSection[] = [
     items: [
       {
         label: "Inicio",
-        path: "/",
+        path: "/dashboard",
         icon: <HiOutlineHome />,
         roles: allRoles,
       },
@@ -83,7 +84,7 @@ const menuSections: MenuSection[] = [
       },
       {
         label: "Asignaturas",
-        path: "/subjects/list",
+        path: "/subjects",
         icon: <HiOutlineBookOpen />,
         roles: ["ADMIN"],
       },
@@ -113,19 +114,19 @@ const menuSections: MenuSection[] = [
     items: [
       {
         label: "Usuarios",
-        path: "/users/list",
+        path: "/users",
         icon: <HiOutlineUsers />,
         roles: ["ADMIN"],
       },
       {
         label: "Docentes",
-        path: "/teachers/list",
+        path: "/users/teachers",
         icon: <HiOutlineIdentification />,
         roles: ["ADMIN"],
       },
       {
         label: "Estudiantes",
-        path: "/students/list",
+        path: "/users/students",
         icon: <HiOutlineUserGroup />,
         roles: ["ADMIN"],
       },
@@ -148,10 +149,10 @@ const menuSections: MenuSection[] = [
         disabled: true,
       },
       {
-        label: "Auditoría",
-        icon: <HiOutlineDocumentText />,
+        label: "Auditorías",
+        path: "/audit-logs",
+        icon: <HiOutlineClipboardList />,
         roles: ["ADMIN"],
-        disabled: true,
       },
       {
         label: "Configuración",
@@ -249,7 +250,7 @@ const menuSections: MenuSection[] = [
     items: [
       {
         label: "Mis asignaturas",
-        path: "/subjects/list",
+        path: "/subjects",
         icon: <HiOutlineBookOpen />,
         roles: ["STUDENT"],
       },

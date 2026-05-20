@@ -15,8 +15,8 @@ class AuditLogService {
     const newLog: AuditLog = {
       ...log,
       id: crypto.randomUUID(),
-      created_at: new Date(),
-      updated_at: new Date(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
 
     localStorage.setItem(

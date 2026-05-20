@@ -26,6 +26,7 @@ class FirebaseAuthService {
     };
 
     localStorage.setItem(STORAGE_KEYS.SOCIAL_TOKEN, firebaseToken);
+    localStorage.setItem(STORAGE_KEYS.TOKEN, firebaseToken);
     localStorage.setItem(STORAGE_KEYS.SOCIAL_USER, JSON.stringify(socialUser));
     localStorage.setItem(STORAGE_KEYS.AUTH_PROVIDER, provider);
 

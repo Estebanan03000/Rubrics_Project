@@ -98,6 +98,8 @@ const StudyPlansList = lazy(() => import('../pages/StudyPlans/List'));
 const StudyPlansCreate = lazy(() => import('../pages/StudyPlans/Create'));
 const StudyPlansUpdate = lazy(() => import('../pages/StudyPlans/Update'));
 
+// Audit Logs
+const AuditLogs = lazy(() => import('../pages/AuditLogs'));
 
 const coreRoutes = [
   {
@@ -163,20 +165,30 @@ const coreRoutes = [
   
   // Users
   {
-  path: '/users',
-  title: 'Usuarios',
-  component: Users,
-},
-{
-  path: '/users/create',
-  title: 'Crear usuario',
-  component: UserCreate,
-},
-{
-  path: '/users/update/:id',
-  title: 'Editar usuario',
-  component: UserUpdate,
-},
+    path: '/users',
+    title: 'Usuarios',
+    component: Users,
+  },
+  {
+    path: '/users/students',
+    title: 'Usuarios estudiantes',
+    component: Users,
+  },
+  {
+    path: '/users/teachers',
+    title: 'Usuarios docentes',
+    component: Users,
+  },
+  {
+    path: '/users/create',
+    title: 'Crear usuario',
+    component: UserCreate,
+  },
+  {
+    path: '/users/update/:id',
+    title: 'Editar usuario',
+    component: UserUpdate,
+  },
   // Rubrics
   { path: '/rubrics/list',       title: 'Rubrics List',    component: RubricsList },
   { path: '/rubrics/create',     title: 'Create Rubric',   component: RubricsCreate },
@@ -285,6 +297,13 @@ const coreRoutes = [
   { path: '/careers/list',       title: 'Careers List',   component: CareersList },
   { path: '/careers/create',     title: 'Create Career',  component: CareersCreate },
   { path: '/careers/update/:id', title: 'Edit Career',    component: CareersUpdate },
+  
+  // Audit Logs
+  {
+    path: '/audit-logs',
+    title: 'Auditorías',
+    component: AuditLogs,
+  },
 
   // StudyPlans
   { path: '/studyplans/list',       title: 'Study Plans List',   component: StudyPlansList },

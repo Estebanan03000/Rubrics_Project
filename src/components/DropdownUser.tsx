@@ -8,6 +8,7 @@ import UserOne from '../images/user/user-01.png';
 //Importar la torre de control para obtener el usuario actual
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { securityService } from "../services/securityService";
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -162,7 +163,10 @@ const DropdownUser = () => {
             </Link>
           </li>
         </ul>
-        <button className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+        <button 
+        className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
+        onClick={() => securityService.logout()}
+        >
           <svg
             className="fill-current"
             width="22"

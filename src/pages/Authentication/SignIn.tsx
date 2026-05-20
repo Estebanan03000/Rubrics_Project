@@ -7,6 +7,7 @@ import { FaGithub, FaMicrosoft } from "react-icons/fa";
 
 import Breadcrumb from "../../components/Breadcrumb";
 import SecurityService, { LoginCredentials } from "../../services/securityService";
+import { firebaseAuthService } from "../../services/firebaseAuthService";
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
@@ -15,17 +16,34 @@ const SignIn: React.FC = () => {
     try {
       const response = await SecurityService.login(credentials);
       console.log("Usuario autenticado:", response);
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error al iniciar sesión", error);
       alert("No se pudo iniciar sesión con correo y contraseña.");
     }
   };
 
-  const handleUnavailableSocialLogin = (provider: string) => {
-    alert(
-      `El inicio de sesión con ${provider} requiere soporte del backend. Actualmente el backend solo permite login con correo y contraseña.`
-    );
+  const handleSocialLogin = async (
+    provider: "google" | "microsoft" | "github",
+  ) => {
+    try {
+      if (provider === "google") {
+        await firebaseAuthService.loginWithGoogle();
+      }
+
+      if (provider === "microsoft") {
+        await firebaseAuthService.loginWithMicrosoft();
+      }
+
+      if (provider === "github") {
+        await firebaseAuthService.loginWithGithub();
+      }
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error en login social:", error);
+      alert("No se pudo iniciar sesión con el proveedor seleccionado.");
+    }
   };
 
   return (
@@ -138,7 +156,7 @@ const SignIn: React.FC = () => {
                     <div className="space-y-3">
                       <button
                         type="button"
-                        onClick={() => handleUnavailableSocialLogin("Google")}
+                        onClick={() => handleSocialLogin("google")}
                         className="flex w-full items-center justify-center gap-3 rounded-lg border border-stroke bg-white p-4 font-medium text-black transition hover:bg-gray-2 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4"
                       >
                         <FcGoogle className="text-2xl" />
@@ -147,7 +165,7 @@ const SignIn: React.FC = () => {
 
                       <button
                         type="button"
-                        onClick={() => handleUnavailableSocialLogin("Microsoft")}
+                        onClick={() => handleSocialLogin("microsoft")}
                         className="flex w-full items-center justify-center gap-3 rounded-lg border border-stroke bg-white p-4 font-medium text-black transition hover:bg-gray-2 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4"
                       >
                         <FaMicrosoft className="text-xl" />
@@ -156,7 +174,7 @@ const SignIn: React.FC = () => {
 
                       <button
                         type="button"
-                        onClick={() => handleUnavailableSocialLogin("GitHub")}
+                        onClick={() => handleSocialLogin("github")}
                         className="flex w-full items-center justify-center gap-3 rounded-lg border border-stroke bg-white p-4 font-medium text-black transition hover:bg-gray-2 dark:border-strokedark dark:bg-boxdark dark:text-white dark:hover:bg-meta-4"
                       >
                         <FaGithub className="text-2xl" />

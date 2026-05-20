@@ -19,12 +19,11 @@ const GroupsList: React.FC = () => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
-
-  useEffect(() => {
-    loadData();
-  }, []);
+  const [loading, setLoading] = useState(true);
 
   const loadData = async () => {
+    setLoading(true);
+
     try {
       const [groupsResponse, subjectsResponse, teachersResponse] =
         await Promise.all([
@@ -33,13 +32,20 @@ const GroupsList: React.FC = () => {
           teacherService.getTeachers(),
         ]);
 
-      setGroups(groupsResponse);
-      setSubjects(subjectsResponse);
-      setTeachers(teachersResponse);
-    } catch {
+      setGroups(Array.isArray(groupsResponse) ? groupsResponse : []);
+      setSubjects(Array.isArray(subjectsResponse) ? subjectsResponse : []);
+      setTeachers(Array.isArray(teachersResponse) ? teachersResponse : []);
+    } catch (error) {
+      console.error(error);
       await Swal.fire("Error", "No se pudieron cargar los grupos.", "error");
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const getSubjectName = (subjectId?: string) => {
     const subject = subjects.find((item) => item.id === subjectId);
@@ -108,11 +114,17 @@ const GroupsList: React.FC = () => {
         onButtonClick={() => navigate("/groups/create")}
       />
 
-      <EntityTable
-        columns={columns}
-        data={groups}
-        emptyMessage="No hay grupos registrados."
-      />
+      {loading ? (
+        <div className="rounded-sm border border-stroke bg-white p-6 text-center shadow-default dark:border-strokedark dark:bg-boxdark">
+          Cargando grupos...
+        </div>
+      ) : (
+        <EntityTable
+          columns={columns}
+          data={groups}
+          emptyMessage="No hay grupos registrados."
+        />
+      )}
     </>
   );
 };

@@ -2,7 +2,7 @@
    Proposito: Implementa la logica principal del archivo App.
 */
 import { Suspense, lazy, useEffect, useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
 import ECommerce from './pages/Dashboard/ECommerce';
@@ -34,10 +34,12 @@ function App() {
       <Routes>
         <Route path="/auth/signin" element={<SignIn />} />
         <Route path="/auth/signup" element={<SignUp />} />
+        <Route path="/" element={<Navigate to="/auth/signin" replace />} />
 
         <Route element={<ProtectedRoute />}>
           <Route element={<DefaultLayout />}>
-            <Route index element={<ECommerce />} />
+            <Route path="/dashboard" element={<ECommerce />} />
+
             {routes.map((routes, index) => {
               const { path, component: Component } = routes;
               return (

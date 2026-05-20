@@ -172,9 +172,9 @@ const menuSections: MenuSection[] = [
     roles: ["TEACHER"],
     items: [
       {
-        label: "Grupos",
-        path: "/groups/list",
-        icon: <HiOutlineRectangleGroup />,
+        label: "Mis grupos",
+        path: "/my-groups",
+        icon: <HiOutlineUserGroup />,
         roles: ["TEACHER"],
       },
       {

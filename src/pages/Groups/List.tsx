@@ -12,6 +12,8 @@ import { Teacher } from "../../models/Teacher";
 import { groupService } from "../../services/groupService";
 import { subjectService } from "../../services/subjectService";
 import { teacherService } from "../../services/teacherService";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 const GroupsList: React.FC = () => {
   const navigate = useNavigate();
@@ -20,6 +22,8 @@ const GroupsList: React.FC = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
+  const currentUser = useSelector((state: RootState) => state.user.user);
+  const isAdmin = currentUser?.role === "ADMIN";
 
   const loadData = async () => {
     setLoading(true);
@@ -93,13 +97,15 @@ const GroupsList: React.FC = () => {
             Editar
           </button>
 
-          <button
-            type="button"
-            onClick={() => navigate(`/groups/assign-teacher?groupId=${group.id}`)}
-            className="rounded bg-primary px-3 py-1 text-sm text-white"
-          >
-            Asignar docente
-          </button>
+          {isAdmin && (
+            <button
+              type="button"
+              onClick={() => navigate(`/groups/assign-teacher?groupId=${group.id}`)}
+              className="rounded bg-primary px-3 py-1 text-sm text-white"
+            >
+              Asignar docente
+            </button>
+          )}
         </div>
       ),
     },

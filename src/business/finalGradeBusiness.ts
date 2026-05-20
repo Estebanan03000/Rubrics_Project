@@ -14,6 +14,8 @@ import { groupService } from '../services/groupService';
 import { studentService } from '../services/studentService';
 import { subjectService } from '../services/subjectService';
 import { semesterService } from '../services/semesterService';
+import { finalGradeService } from '../services/finalGradeService';
+import { auditLogService } from '../services/auditLogService';
 
 class FinalGradeBusiness {
   async getFinalGradeConsolidated(
@@ -119,8 +121,31 @@ class FinalGradeBusiness {
   }
 
   async confirmOfficialRegister(groupId: string): Promise<any[]> {
-    return gradeService.registerFinalScoresByGroup(groupId);
-  }
+  const consolidated = await this.getFinalGradeConsolidated(groupId);
+
+  const officialGrades = consolidated.students.map((student) => ({
+    enrollment_id: student.enrollmentId,
+    student_id: student.studentId,
+    group_id: groupId,
+    final_grade: Number(student.finalScore.toFixed(2)),
+    observations:
+      student.status === 'partial'
+        ? 'Nota final parcial por evaluaciones incompletas.'
+        : '',
+    is_finalized: true,
+  }));
+
+  finalGradeService.saveManyFinalGrades(officialGrades);
+
+  auditLogService.createLog({
+    action: 'FINAL_GRADE_REGISTERED',
+    entity_name: 'FinalGrade',
+    entity_id: groupId,
+    detail: `Registro oficial confirmado para ${officialGrades.length} estudiante(s).`,
+  });
+
+  return officialGrades;
+}
 
   private buildStudentRow(
     enrollment: Enrollment,

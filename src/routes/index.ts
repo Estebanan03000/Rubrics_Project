@@ -45,6 +45,7 @@ const GroupsList = lazy(() => import('../pages/Groups/List'));
 const GroupsCreate = lazy(() => import('../pages/Groups/Create'));
 const GroupsUpdate = lazy(() => import('../pages/Groups/Update'));
 const AssignTeacherToGroup = lazy(() => import('../pages/Groups/AssignTeacher'));
+const MyGroups = lazy(() => import("../pages/MyGroups"));
 
 // Criteria
 const CriteriaList = lazy(() => import('../pages/Criteria/List'));
@@ -226,7 +227,12 @@ const coreRoutes = [
   { path: '/groups/create',     title: 'Create Group',  component: GroupsCreate },
   { path: '/groups/update/:id', title: 'Edit Group',    component: GroupsUpdate },
   { path: '/groups/assign-teacher',title: 'Assign Teacher To Group',component: AssignTeacherToGroup },
-
+  {
+    path: "/my-groups",
+    title: "Mis grupos",
+    component: MyGroups,
+  },
+  
   // Criteria
   { path: '/criteria/list',       title: 'Criteria List',   component: CriteriaList },
   { path: '/criteria/create',     title: 'Create Criterion',component: CriteriaCreate },

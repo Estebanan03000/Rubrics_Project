@@ -11,6 +11,7 @@ import { Evaluation } from "../../models/Evaluation";
 import { GradeFormData } from "../../models/GradeFormData";
 import { Student } from "../../models/Student";
 import { gradingBusiness } from "../../business/gradingBusiness";
+import { finalGradeService } from '../../services/finalGradeService';
 
 const GradeStudent: React.FC = () => {
   const { evaluationId, enrollmentId } = useParams();
@@ -20,6 +21,7 @@ const GradeStudent: React.FC = () => {
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
   const [student, setStudent] = useState<Student | null>(null);
   const [formData, setFormData] = useState<GradeFormData | null>(null);
+  const [isFinalized, setIsFinalized] = useState(false);
 
   useEffect(() => {
     loadContext();
@@ -37,6 +39,7 @@ const GradeStudent: React.FC = () => {
       setEvaluation(context.evaluation);
       setStudent(context.student);
       setFormData(gradingBusiness.buildInitialFormData(context));
+      setIsFinalized(finalGradeService.isEnrollmentFinalized(enrollmentId));
     } catch (error) {
       await Swal.fire(
         "Error",
@@ -50,6 +53,15 @@ const GradeStudent: React.FC = () => {
 
   const handleSaveDraft = async () => {
     if (!formData) return;
+
+    if (isFinalized) {
+      await Swal.fire(
+        'Nota bloqueada',
+        'La nota final ya fue registrada oficialmente y no puede editarse.',
+        'warning',
+      );
+      return;
+    }
 
     try {
       await gradingBusiness.saveGrade(formData, false);
@@ -74,6 +86,15 @@ const GradeStudent: React.FC = () => {
 
   const handleSubmitGrade = async () => {
     if (!formData) return;
+
+    if (isFinalized) {
+      await Swal.fire(
+        'Nota bloqueada',
+        'La nota final ya fue registrada oficialmente y no puede editarse.',
+        'warning',
+      );
+      return;
+    }
 
     try {
       await gradingBusiness.saveGrade(formData, true);
@@ -116,6 +137,12 @@ const GradeStudent: React.FC = () => {
         ]}
       />
 
+      {isFinalized && (
+        <div className="mb-6 rounded-sm border border-warning bg-warning bg-opacity-10 p-4 text-sm text-warning">
+          Esta inscripción ya tiene nota final oficial registrada. La edición está bloqueada visualmente.
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <div className="xl:col-span-2">
           <RubricGradingTable formData={formData} onChange={setFormData} />
@@ -133,6 +160,7 @@ const GradeStudent: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSaveDraft}
+                disabled={isFinalized}
                 className="rounded border border-stroke px-4 py-2"
               >
                 Guardar borrador
@@ -141,6 +169,7 @@ const GradeStudent: React.FC = () => {
               <button
                 type="button"
                 onClick={handleSubmitGrade}
+                disabled={isFinalized}
                 className="rounded bg-primary px-4 py-2 text-white"
               >
                 Enviar calificación

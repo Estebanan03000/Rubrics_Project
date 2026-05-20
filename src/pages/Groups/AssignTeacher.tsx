@@ -15,6 +15,9 @@ import { groupService } from "../../services/groupService";
 import { subjectService } from "../../services/subjectService";
 import { teacherService } from "../../services/teacherService";
 import { groupAssignmentBusiness } from "../../business/groupAssignmentBusiness";
+import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 const AssignTeacherToGroup: React.FC = () => {
   const navigate = useNavigate();
@@ -35,7 +38,12 @@ const AssignTeacherToGroup: React.FC = () => {
 
   const [groupSearch, setGroupSearch] = useState("");
   const [teacherSearch, setTeacherSearch] = useState("");
+  const currentUser = useSelector((state: RootState) => state.user.user);
 
+  if (currentUser?.role !== "ADMIN") {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
   useEffect(() => {
     loadInitialData();
   }, []);

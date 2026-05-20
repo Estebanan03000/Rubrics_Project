@@ -8,6 +8,7 @@ import {
 } from '../../models/FinalGrade';
 import { finalGradeBusiness } from '../../business/finalGradeBusiness';
 import { downloadFinalGradePdfReport } from '../../utils/finalGradePdfReport';
+import { finalGradeService } from '../../services/finalGradeService';
 
 const FinalRegister: React.FC = () => {
   const navigate = useNavigate();
@@ -71,6 +72,10 @@ const FinalRegister: React.FC = () => {
     return student.grades.find((grade) => grade.evaluationId === evaluationId);
   };
 
+  const isFinalized = (enrollmentId: string) => {
+  return finalGradeService.isEnrollmentFinalized(enrollmentId);
+};
+
   const handleConfirmOfficialRegister = async () => {
     if (!groupId) return;
 
@@ -81,8 +86,12 @@ const FinalRegister: React.FC = () => {
       return;
     }
 
+    const hasPartialGrades = data?.summary.partialStudents > 0;
+
     const confirmRegister = window.confirm(
-      '¿Está segura de confirmar el registro oficial? Las notas quedarán registradas oficialmente.',
+      hasPartialGrades
+        ? 'Hay estudiantes con notas incompletas. ¿Deseas registrar notas finales parciales?'
+        : '¿Está segura de confirmar el registro oficial? Las notas quedarán registradas oficialmente.',
     );
 
     if (!confirmRegister) return;
@@ -436,7 +445,11 @@ const FinalRegister: React.FC = () => {
                   </td>
 
                   <td className="px-4 py-4 text-center">
-                    {student.status === 'complete' ? (
+                    {isFinalized(student.enrollmentId) ? (
+                      <span className="rounded-full bg-primary bg-opacity-10 px-3 py-1 text-xs font-medium text-primary">
+                        Oficial
+                      </span>
+                    ) : student.status === 'complete' ? (
                       <span className="rounded-full bg-success bg-opacity-10 px-3 py-1 text-xs font-medium text-success">
                         Completa
                       </span>

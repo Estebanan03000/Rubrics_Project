@@ -2,6 +2,18 @@ import { Evaluation } from './Evaluation';
 
 export type FinalGradeStatus = 'complete' | 'partial';
 
+export interface OfficialFinalGrade {
+  id?: string;
+  enrollment_id: string;
+  student_id?: string;
+  group_id?: string;
+  final_grade: number;
+  observations?: string;
+  is_finalized: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface FinalGradeEvaluationColumn {
   id: string;
   name: string;

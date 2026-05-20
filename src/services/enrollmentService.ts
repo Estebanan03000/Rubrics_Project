@@ -35,8 +35,19 @@ class EnrollmentService {
     payload: EnrollmentRequest,
   ): Promise<Enrollment[]> {
     try {
-      const response = await api.post(this.API_URL, payload);
-      return this.getResponseData(response);
+      const requests = payload.group_ids.map((groupId) =>
+        api.post(this.API_URL, {
+          student_id: payload.student_id,
+          group_id: groupId,
+          status: 'ACTIVE',
+        }),
+      );
+
+      const responses = await Promise.all(requests);
+
+      return responses.map((response) =>
+        this.getResponseData(response),
+      );
     } catch (error) {
       console.error('Error creating enrollments:', error);
       throw error;
@@ -47,9 +58,9 @@ class EnrollmentService {
     id: string,
   ): Promise<Enrollment | null> {
     try {
-      const response = await api.patch(
-        `${this.API_URL}/${id}/cancel`,
-      );
+      const response = await api.put(`${this.API_URL}/${id}`, {
+        status: 'CANCELLED',
+      });
 
       return this.getResponseData(response);
     } catch (error) {

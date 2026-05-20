@@ -2,6 +2,9 @@
 import { api } from '../interceptors/authInterceptor';
 import { Evaluation } from '../models/Evaluation';
 import { Rubric } from '../models/Rubric';
+import { rubricService } from './rubricService';
+import { criterionService } from './criterionService';
+import { scaleService } from './scaleService';
 
 class EvaluationService {
   private readonly API_URL = '/api/evaluation/evaluations';
@@ -14,11 +17,45 @@ class EvaluationService {
     evaluationId: string,
   ): Promise<Rubric | null> {
     try {
-      const response = await api.get(
-        `${this.API_URL}/${evaluationId}/rubric`,
+      const evaluation = await this.getEvaluationById(evaluationId);
+
+      if (!evaluation) {
+        throw new Error('evaluation not found');
+      }
+
+      if (!evaluation.rubric_id) {
+        throw new Error('evaluation does not have an associated rubric');
+      }
+
+      const rubric = await rubricService.getRubricById(
+        evaluation.rubric_id,
       );
 
-      return this.getResponseData(response);
+      if (!rubric) {
+        throw new Error('rubric not found');
+      }
+
+      if (rubric.is_public !== true) {
+        throw new Error('rubric is not public');
+      }
+
+      const criteria = await criterionService.getCriteriaByRubricId(
+        rubric.id!,
+      );
+
+      const criteriaWithScales = await Promise.all(
+        criteria.map(async (criterion) => ({
+          ...criterion,
+          scales: await scaleService.getScalesByCriterionId(
+            criterion.id,
+          ),
+        })),
+      );
+
+      return {
+        ...rubric,
+        criteria: criteriaWithScales,
+      };
     } catch (error) {
       console.error('Error fetching evaluation rubric:', error);
       throw error;
@@ -28,14 +65,10 @@ class EvaluationService {
   async associateRubric(
     evaluationId: string,
     rubricId: string,
-    subjectId: string,
   ): Promise<Evaluation | null> {
     try {
       const response = await api.patch(
         `${this.API_URL}/${evaluationId}/associate-rubric/${rubricId}`,
-        {
-          subject_id: subjectId,
-        },
       );
 
       return this.getResponseData(response);

@@ -7,6 +7,7 @@ import GenericTable from '../../components/GenericTable';
 
 import { Subject } from '../../models/Subject';
 import { subjectService } from '../../services/subjectService';
+import { auditLogService } from '../../services/auditLogService';
 
 export default function Subjects() {
   const navigate = useNavigate();
@@ -52,6 +53,12 @@ export default function Subjects() {
 
     try {
       await subjectService.archiveSubject(id);
+      auditLogService.createLog({
+        action: 'ARCHIVE',
+        entity_name: 'Subject',
+        entity_id: id,
+        detail: 'Asignatura archivada',
+      });
       await loadSubjects();
 
       Swal.fire(

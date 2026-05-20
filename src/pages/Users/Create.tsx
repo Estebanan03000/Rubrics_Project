@@ -5,6 +5,7 @@ import UserForm from '../../components/users/UserForm';
 
 import { User } from '../../models/User';
 import { userService } from '../../services/userService';
+import { auditLogService } from '../../services/auditLogService';
 
 export default function CreateUser() {
   const navigate = useNavigate();
@@ -12,6 +13,12 @@ export default function CreateUser() {
   const handleCreate = async (data: User) => {
     try {
       await userService.createUser(data);
+      auditLogService.createLog({
+        action: 'CREATE',
+        entity_name: 'User',
+        entity_id: data.id,
+        detail: `Usuario creado: ${data.email}`,
+      });
       navigate('/users');
     } catch (error: any) {
       alert(

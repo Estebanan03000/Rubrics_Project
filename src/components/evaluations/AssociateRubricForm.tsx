@@ -2,35 +2,30 @@ import { useState } from 'react';
 
 import { Evaluation } from '../../models/Evaluation';
 import { Rubric } from '../../models/Rubric';
-import { Subject } from '../../models/Subject';
 
 interface Props {
   evaluations: Evaluation[];
   rubrics: Rubric[];
-  subjects: Subject[];
   onSubmit: (
     evaluationId: string,
     rubricId: string,
-    subjectId: string,
   ) => void;
 }
 
 export default function AssociateRubricForm({
   evaluations,
   rubrics,
-  subjects,
   onSubmit,
 }: Props) {
   const [evaluationId, setEvaluationId] = useState('');
   const [rubricId, setRubricId] = useState('');
-  const [subjectId, setSubjectId] = useState('');
 
   return (
     <form
       className="mx-auto max-w-xl space-y-4"
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit(evaluationId, rubricId, subjectId);
+        onSubmit(evaluationId, rubricId);
       }}
     >
       <select
@@ -56,21 +51,7 @@ export default function AssociateRubricForm({
 
         {rubrics.map((rubric) => (
           <option key={rubric.id} value={rubric.id}>
-            {rubric.name || rubric.id}
-          </option>
-        ))}
-      </select>
-
-      <select
-        className="w-full rounded border px-3 py-2 text-sm"
-        value={subjectId}
-        onChange={(e) => setSubjectId(e.target.value)}
-      >
-        <option value="">Seleccione asignatura</option>
-
-        {subjects.map((subject) => (
-          <option key={subject.id} value={subject.id}>
-            {subject.name || subject.code}
+            {rubric.title || rubric.name || rubric.id}
           </option>
         ))}
       </select>

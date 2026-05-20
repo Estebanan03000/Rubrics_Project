@@ -7,6 +7,7 @@ import GenericTable from '../../components/GenericTable';
 
 import { Enrollment } from '../../models/Enrollment';
 import { enrollmentService } from '../../services/enrollmentService';
+import { auditLogService } from '../../services/auditLogService';
 
 export default function EnrollmentsList() {
   const navigate = useNavigate();
@@ -59,6 +60,12 @@ export default function EnrollmentsList() {
 
     try {
       await enrollmentService.cancelEnrollment(id);
+      auditLogService.createLog({
+        action: 'CANCEL',
+        entity_name: 'Enrollment',
+        entity_id: id,
+        detail: 'Inscripción cancelada',
+      });
 
       await loadEnrollments();
 

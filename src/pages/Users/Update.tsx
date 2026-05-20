@@ -6,6 +6,7 @@ import UserForm from '../../components/users/UserForm';
 
 import { User } from '../../models/User';
 import { userService } from '../../services/userService';
+import { auditLogService } from '../../services/auditLogService';
 
 export default function UpdateUser() {
   const { id } = useParams();
@@ -29,6 +30,12 @@ export default function UpdateUser() {
 
     try {
       await userService.updateUser(id, data);
+      auditLogService.createLog({
+        action: 'UPDATE',
+        entity_name: 'User',
+        entity_id: id,
+        detail: `Usuario actualizado: ${data.email}`,
+      });
       navigate('/users');
     } catch (error: any) {
       alert(

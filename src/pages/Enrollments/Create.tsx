@@ -12,6 +12,7 @@ import { EnrollmentRequest } from '../../models/Enrollment';
 import { studentService } from '../../services/studentService';
 import { groupService } from '../../services/groupService';
 import { enrollmentService } from '../../services/enrollmentService';
+import { auditLogService } from '../../services/auditLogService';
 
 export default function CreateEnrollment() {
   const navigate = useNavigate();
@@ -54,6 +55,12 @@ export default function CreateEnrollment() {
 
     try {
       await enrollmentService.createEnrollments(data);
+      auditLogService.createLog({
+        action: 'CREATE',
+        entity_name: 'Enrollment',
+        entity_id: data.student_id,
+        detail: `Inscripción creada para ${data.group_ids.length} grupo(s)`,
+      });
 
       Swal.fire(
         'Completado',

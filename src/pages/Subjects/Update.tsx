@@ -7,6 +7,7 @@ import SubjectForm from '../../components/subjects/SubjectForm';
 
 import { Subject } from '../../models/Subject';
 import { subjectService } from '../../services/subjectService';
+import { auditLogService } from '../../services/auditLogService';
 
 export default function UpdateSubject() {
   const { id } = useParams();
@@ -48,6 +49,12 @@ export default function UpdateSubject() {
 
     try {
       await subjectService.updateSubject(id, data);
+      auditLogService.createLog({
+        action: 'UPDATE',
+        entity_name: 'Subject',
+        entity_id: id,
+        detail: `Asignatura actualizada: ${data.name}`,
+      });
 
       Swal.fire(
         'Completado',
